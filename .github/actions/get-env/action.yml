@@ -97,7 +97,7 @@ runs:
         # Run azd env refresh and capture outputs
         export AZURE_SUBSCRIPTION_ID="${{ inputs.AZURE_SUBSCRIPTION_ID }}"
         export AZURE_LOCATION="${{ inputs.AZURE_LOCATION }}"
-        # azd init -e ${{ inputs.AZURE_ENV_NAME }} -l $AZURE_LOCATION -s $AZURE_SUBSCRIPTION_ID
+        azd init -e ${{ inputs.AZURE_ENV_NAME }} -l $AZURE_LOCATION -s $AZURE_SUBSCRIPTION_ID
         
         set +e
         output=$(azd env refresh -e "${{ inputs.AZURE_ENV_NAME }}" -l $AZURE_LOCATION -s $AZURE_SUBSCRIPTION_ID --no-prompt 2>&1)
@@ -127,18 +127,18 @@ runs:
           export $VAR=$VALUE            
         done
 
-        # # Define azd deployAppService parameter
-        # export AZURE_DEPLOY_APP_SERVICE=${{ inputs.AZURE_DEPLOY_APP_SERVICE }}
-        # [ -n "$AZURE_DEPLOY_APP_SERVICE" ] && echo 'AZURE_DEPLOY_APP_SERVICE is ${AZURE_DEPLOY_APP_SERVICE}' || echo 'AZURE_DEPLOY_APP_SERVICE is empty defaulting to true'
-        # [ -n "$AZURE_DEPLOY_APP_SERVICE" ] && azd env set AZURE_DEPLOY_APP_SERVICE ${AZURE_DEPLOY_APP_SERVICE} || azd env set AZURE_DEPLOY_APP_SERVICE true
+        # Define azd deployAppService parameter
+        export AZURE_DEPLOY_APP_SERVICE=${{ inputs.AZURE_DEPLOY_APP_SERVICE }}
+        [ -n "$AZURE_DEPLOY_APP_SERVICE" ] && echo 'AZURE_DEPLOY_APP_SERVICE is ${AZURE_DEPLOY_APP_SERVICE}' || echo 'AZURE_DEPLOY_APP_SERVICE is empty defaulting to true'
+        [ -n "$AZURE_DEPLOY_APP_SERVICE" ] && azd env set AZURE_DEPLOY_APP_SERVICE ${AZURE_DEPLOY_APP_SERVICE} || azd env set AZURE_DEPLOY_APP_SERVICE true
 
-        # # Load sample data if needed
+        # Load sample data if needed
 
-        # indexSampleData=$([ -z "$LOAD_AZURE_SEARCH_SAMPLE_DATA" ] || [ "$LOAD_AZURE_SEARCH_SAMPLE_DATA" == "true" ] && echo true || echo false)
-        # if [ $indexSampleData = "true" ]; then
-        #   echo "🔶 | Running post-provisioning script to populate sample data." 
-        #   ./infra/hooks/postprovision.sh 
-        # fi
+        indexSampleData=$([ -z "$LOAD_AZURE_SEARCH_SAMPLE_DATA" ] || [ "$LOAD_AZURE_SEARCH_SAMPLE_DATA" == "true" ] && echo true || echo false)
+        if [ $indexSampleData = "true" ]; then
+          echo "🔶 | Running post-provisioning script to populate sample data." 
+          ./infra/hooks/postprovision.sh 
+        fi
 
 outputs:
   AZUREAI_HUB_NAME:
