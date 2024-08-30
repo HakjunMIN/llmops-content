@@ -12,7 +12,7 @@ jobs:
         github.event.pull_request.merged == true && 
         startsWith(github.event.pull_request.head.ref, 'release/')
     runs-on: ubuntu-latest
-    environment: prod
+    environment: dev
     outputs:
       AZURE_APP_SERVICE_NAME: ${{ steps.config-env.outputs.AZURE_APP_SERVICE_NAME }}
       AZURE_APP_SERVICE_PLAN_NAME: ${{ steps.config-env.outputs.AZURE_APP_SERVICE_PLAN_NAME }}
@@ -63,7 +63,7 @@ jobs:
   integration-testing:
     if: ${{ github.repository != 'Azure/llmops-project-template' }}    
     runs-on: ubuntu-latest
-    environment: prod
+    environment: dev
     needs: [setup-env-job]
     steps:      
       - name: Integration Tests
@@ -73,7 +73,7 @@ jobs:
   get-source-acr-and-repository:
     needs: [setup-env-job, integration-testing]
     runs-on: ubuntu-latest
-    environment: qa
+    environment: dev
     env:
       AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
@@ -123,7 +123,7 @@ jobs:
   import-image:
     runs-on: ubuntu-latest
     needs: [setup-env-job, get-source-acr-and-repository] 
-    environment: prod
+    environment: dev
     env:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       SOURCE_REGISTRY: ${{ needs.get-source-acr-and-repository.outputs.SOURCE_REGISTRY }}
@@ -162,7 +162,7 @@ jobs:
   deploy-flow:
     runs-on: ubuntu-latest
     needs: [setup-env-job, import-image] 
-    environment: prod
+    environment: dev
     env:
       AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
@@ -299,7 +299,7 @@ jobs:
   smoke-tests:
     needs: [setup-env-job, deploy-flow]     
     runs-on: ubuntu-latest
-    environment: prod
+    environment: dev
     env: 
       AZURE_APP_SERVICE_NAME: ${{needs.setup-env-job.outputs.AZURE_APP_SERVICE_NAME}}
     steps:
