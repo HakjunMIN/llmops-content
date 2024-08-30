@@ -97,10 +97,11 @@ runs:
         # Run azd env refresh and capture outputs
         export AZURE_SUBSCRIPTION_ID="${{ inputs.AZURE_SUBSCRIPTION_ID }}"
         export AZURE_LOCATION="${{ inputs.AZURE_LOCATION }}"
-        azd init -e ${{ inputs.AZURE_ENV_NAME }} -l $AZURE_LOCATION -s $AZURE_SUBSCRIPTION_ID
-        # azd config set defaults.subscription $AZURE_SUBSCRIPTION_ID
-        # azd config set defaults.location $AZURE_LOCATION
-        # azd config set defaults.location $AZURE_LOCATION
+        # azd init -e ${{ inputs.AZURE_ENV_NAME }} -l $AZURE_LOCATION -s $AZURE_SUBSCRIPTION_ID
+
+        azd init -e llmops-dev -s 12f55838-824f-4f06-a39a-e452ff7fdb7a -l swedencentral 
+        azd env refresh -e "llmops-dev" --no-prompt  
+        azd env get-values -e llmops-dev
 
         azd env refresh -e "${{ inputs.AZURE_ENV_NAME }}" --no-prompt
         set +e
