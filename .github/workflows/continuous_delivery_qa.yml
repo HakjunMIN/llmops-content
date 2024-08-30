@@ -10,7 +10,7 @@ jobs:
   setup-env-job:
     if: ${{ github.repository != 'Azure/llmops-project-template' }}        
     runs-on: ubuntu-latest
-    environment: qa
+    environment: dev
     outputs:
       AZURE_APP_SERVICE_NAME: ${{ steps.config-env.outputs.AZURE_APP_SERVICE_NAME }}
       AZURE_APP_SERVICE_PLAN_NAME: ${{ steps.config-env.outputs.AZURE_APP_SERVICE_PLAN_NAME }}
@@ -72,7 +72,7 @@ jobs:
   qa-flow-evaluation:
     needs: [setup-env-job]
     runs-on: ubuntu-latest
-    environment: qa
+    environment: dev
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -130,7 +130,7 @@ jobs:
   qa-safety-evaluation:
     needs: setup-env-job    
     runs-on: ubuntu-latest
-    environment: qa
+    environment: dev
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -194,7 +194,7 @@ jobs:
   integration-testing:
     needs: [setup-env-job, qa-flow-evaluation, qa-safety-evaluation]
     runs-on: ubuntu-latest
-    environment: qa
+    environment: dev
     steps:
       - name: Integration Tests
         run: |
@@ -253,7 +253,7 @@ jobs:
   import-image:
     runs-on: ubuntu-latest
     needs: [setup-env-job, get-source-acr-and-repository] 
-    environment: qa
+    environment: dev
     env:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       SOURCE_REGISTRY: ${{ needs.get-source-acr-and-repository.outputs.SOURCE_REGISTRY }}
@@ -356,7 +356,7 @@ jobs:
   deploy-flow:
     runs-on: ubuntu-latest
     needs: [setup-env-job, import-image] 
-    environment: qa
+    environment: dev
     env:
       AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}

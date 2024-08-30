@@ -98,13 +98,10 @@ runs:
         export AZURE_SUBSCRIPTION_ID="${{ inputs.AZURE_SUBSCRIPTION_ID }}"
         export AZURE_LOCATION="${{ inputs.AZURE_LOCATION }}"
 
-        azd env refresh -e "${{ inputs.AZURE_ENV_NAME }}" --no-prompt
         set +e
         output=$(azd env refresh -e "${{ inputs.AZURE_ENV_NAME }}" --no-prompt 2>&1)
         exit_code=$?
         set -e
-
-        azd env get-values -e ${{ inputs.AZURE_ENV_NAME }} 
        
         # Set environment variables by getting them from the GitHub environment or the last deployment. 
         # GitHub environment variables take precedence over those from the last deployment.

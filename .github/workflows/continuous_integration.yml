@@ -52,34 +52,34 @@ jobs:
     runs-on: ubuntu-latest
     environment: dev
     outputs:
-      AZUREAI_PROJECT_NAME: ${{ steps.config-env.outputs.AZUREAI_PROJECT_NAME }}
-      AZURE_APP_SERVICE_NAME: ${{ steps.config-env.outputs.AZURE_APP_SERVICE_NAME }}
-      AZURE_APP_SERVICE_PLAN_NAME: ${{ steps.config-env.outputs.AZURE_APP_SERVICE_PLAN_NAME }}
-      AZURE_CONTAINER_REGISTRY_NAME: ${{ steps.config-env.outputs.AZURE_CONTAINER_REGISTRY_NAME }}
-      AZURE_CONTAINER_REPOSITORY_NAME: ${{ steps.config-env.outputs.AZURE_CONTAINER_REPOSITORY_NAME }}
-      AZURE_LOCATION: ${{ steps.config-env.outputs.AZURE_LOCATION }}
-      AZURE_OPENAI_API_VERSION: ${{ steps.config-env.outputs.AZURE_OPENAI_API_VERSION }}
-      AZURE_OPENAI_CHAT_DEPLOYMENT: ${{ steps.config-env.outputs.AZURE_OPENAI_CHAT_DEPLOYMENT }}
-      AZURE_OPENAI_EMBEDDING_DEPLOYMENT: ${{ steps.config-env.outputs.AZURE_OPENAI_EMBEDDING_DEPLOYMENT }}
-      AZURE_OPENAI_EMBEDDING_MODEL: ${{ steps.config-env.outputs.AZURE_OPENAI_EMBEDDING_MODEL }}
-      AZURE_OPENAI_ENDPOINT: ${{ steps.config-env.outputs.AZURE_OPENAI_ENDPOINT }}
-      AZURE_OPENAI_NAME: ${{ steps.config-env.outputs.AZURE_OPENAI_NAME }}
-      AZURE_RESOURCE_GROUP: ${{ steps.config-env.outputs.AZURE_RESOURCE_GROUP }}
-      AZUREAI_RESOURCE_GROUP: ${{ steps.config-env.outputs.AZURE_RESOURCE_GROUP }}      
-      AZURE_SEARCH_ENDPOINT: ${{ steps.config-env.outputs.AZURE_SEARCH_ENDPOINT }}
-      LOAD_AZURE_SEARCH_SAMPLE_DATA: ${{ steps.config-env.outputs.LOAD_AZURE_SEARCH_SAMPLE_DATA }}
-      AZURE_SEARCH_NAME: ${{ steps.config-env.outputs.AZURE_SEARCH_NAME }}
-      AZURE_SUBSCRIPTION_ID: ${{ steps.config-env.outputs.AZURE_SUBSCRIPTION_ID }} 
-      PROMPTFLOW_SERVING_ENGINE: ${{ steps.config-env.outputs.PROMPTFLOW_SERVING_ENGINE }}
-      PROMPTFLOW_WORKER_NUM: ${{ steps.config-env.outputs.PROMPTFLOW_WORKER_NUM }}
-      AZURE_PRINCIPAL_ID: ${{ steps.config-env.outputs.AZURE_PRINCIPAL_ID }}
-      AZURE_STORAGE_ACCOUNT_NAME: ${{ steps.config-env.outputs.AZURE_STORAGE_ACCOUNT_NAME }}  
+      AZUREAI_PROJECT_NAME: ${{ steps.get-env.outputs.AZUREAI_PROJECT_NAME }}
+      AZURE_APP_SERVICE_NAME: ${{ steps.get-env.outputs.AZURE_APP_SERVICE_NAME }}
+      AZURE_APP_SERVICE_PLAN_NAME: ${{ steps.get-env.outputs.AZURE_APP_SERVICE_PLAN_NAME }}
+      AZURE_CONTAINER_REGISTRY_NAME: ${{ steps.get-env.outputs.AZURE_CONTAINER_REGISTRY_NAME }}
+      AZURE_CONTAINER_REPOSITORY_NAME: ${{ steps.get-env.outputs.AZURE_CONTAINER_REPOSITORY_NAME }}
+      AZURE_LOCATION: ${{ steps.get-env.outputs.AZURE_LOCATION }}
+      AZURE_OPENAI_API_VERSION: ${{ steps.get-env.outputs.AZURE_OPENAI_API_VERSION }}
+      AZURE_OPENAI_CHAT_DEPLOYMENT: ${{ steps.get-env.outputs.AZURE_OPENAI_CHAT_DEPLOYMENT }}
+      AZURE_OPENAI_EMBEDDING_DEPLOYMENT: ${{ steps.get-env.outputs.AZURE_OPENAI_EMBEDDING_DEPLOYMENT }}
+      AZURE_OPENAI_EMBEDDING_MODEL: ${{ steps.get-env.outputs.AZURE_OPENAI_EMBEDDING_MODEL }}
+      AZURE_OPENAI_ENDPOINT: ${{ steps.get-env.outputs.AZURE_OPENAI_ENDPOINT }}
+      AZURE_OPENAI_NAME: ${{ steps.get-env.outputs.AZURE_OPENAI_NAME }}
+      AZURE_RESOURCE_GROUP: ${{ steps.get-env.outputs.AZURE_RESOURCE_GROUP }}
+      AZUREAI_RESOURCE_GROUP: ${{ steps.get-env.outputs.AZURE_RESOURCE_GROUP }}      
+      AZURE_SEARCH_ENDPOINT: ${{ steps.get-env.outputs.AZURE_SEARCH_ENDPOINT }}
+      LOAD_AZURE_SEARCH_SAMPLE_DATA: ${{ steps.get-env.outputs.LOAD_AZURE_SEARCH_SAMPLE_DATA }}
+      AZURE_SEARCH_NAME: ${{ steps.get-env.outputs.AZURE_SEARCH_NAME }}
+      AZURE_SUBSCRIPTION_ID: ${{ steps.get-env.outputs.AZURE_SUBSCRIPTION_ID }} 
+      PROMPTFLOW_SERVING_ENGINE: ${{ steps.get-env.outputs.PROMPTFLOW_SERVING_ENGINE }}
+      PROMPTFLOW_WORKER_NUM: ${{ steps.get-env.outputs.PROMPTFLOW_WORKER_NUM }}
+      AZURE_PRINCIPAL_ID: ${{ steps.get-env.outputs.AZURE_PRINCIPAL_ID }}
+      AZURE_STORAGE_ACCOUNT_NAME: ${{ steps.get-env.outputs.AZURE_STORAGE_ACCOUNT_NAME }}  
     steps: 
     - uses: actions/checkout@v4
 
     - name: Config dev environment
-      uses: ./.github/actions/config-env
-      id: config-env
+      uses: ./.github/actions/get-env
+      id: get-env
       with:
         AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
         AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}

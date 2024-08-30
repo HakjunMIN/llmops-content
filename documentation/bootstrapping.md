@@ -17,81 +17,13 @@ You will also need:
 
 ## Steps to Bootstrap a Project
 
-1. **Clone the LLMOps Repo (this repository) into a temporary directory**
+1. 이 프로젝트를 Fork합니다.
 
-   Clone the repository from GitHub into a temporary directory:
-
-   ```sh
-    mkdir temp
-    cd temp
-    git clone https://github.com/azure/llmops
-   ```
-
-2. **Define Properties for Bootstrapping**
-
-    Go to the `llmops` directory.
-
-   ```sh
-    cd llmops
-   ```
-
-   Create a copy of the `bootstrap.properties.template` file with this filename `bootstrap.properties`.
-
-    ```sh
-    cp bootstrap.properties.template bootstrap.properties
-    ```
-
-    Open the `bootstrap.properties` with a text editor and update it with the following information:
-
-   - **GitHub Repo Creation** (related to the new repository to be created)
-     - `github_username`: Your GitHub **username**.
-     - `github_use_ssh`: Set to **true** to interact with GitHub repos using [SSH](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-ssh-urls), **false** to use [HTTPS](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls).
-     - `github_template_repo`: The project template repository. Ex: *azure/llmops-project-template*.
-     - `github_new_repo`: The bootstrapped project repo to be created. Ex *placerda/my-rag-project*.
-     - `github_new_repo_visibility`: Visibility of the new repository, choose **public**, **private** or **internal**.
-
-        > For private or internal repositories, you must use GitHub Pro, GitHub Team, or GitHub Enterprise.
-
-   - **Dev Environment Provision Properties**
-     - `azd_dev_env_provision`: Set to **true** to provision a development environment.
-     
-          > If you set it to **false**, you will need to manually create the environment for the project.
-
-     - `azd_dev_env_name`: The name of the development environment. Ex: *rag-project-dev*.
-     - `azd_dev_env_subscription`: Your Azure subscription ID.
-     - `azd_dev_env_location`: The Azure region for your dev environment. Ex: *eastus2*.
-
-    > The dev environment resources will be created in the selected subscription and region. This decision should consider the quota available for the resources to be created in the region, as well as the fact that some resources have specific features enabled only in certain regions. Therefore, ensure that the resources to be created by the IaC of your template project have quota and availability in the chosen subscription and region. More information about the resources to be created can be found on the template page, as shown in this project template example: [LLMOps Project Template Resources](https://github.com/Azure/llmops-project-template/blob/main/README.md#project-resources).
-
-
-   * check quota
-
-   > [!Note]
-   > 리전은 AI 기반 Evaluator를 사용하기 위해 ["eastus2", "francecentral", "uksouth", "swedencentral"]
-   > https://learn.microsoft.com/en-us/azure/ai-studio/how-to/develop/flow-evaluate-sdk#risk-and-safety-evaluators
-
+2. `gh`을 이용하여 환경변수, Github Action설정을 합니다.
 
    ```bash
-   subscriptionId="replace by your subscription id" 
-   region="swedencentral"
-   results=$(az cognitiveservices usage list --subscription $subscriptionId --location $region) 
-   echo $results | jq -r '.[] | select(.name.value | test("Standard.gpt-4"))'
-   echo $results | jq -r '.[] | select(.name.value | test("OpenAI.Standard.text-embedding-ada-002"))'
-   echo $results | jq -r '.[] | select(.name.value | test("Standard.gpt-35-turbo"))' 
-   ```
-
-   Here is an example of the `bootstrap.properties` file:
-
-   ```properties
-   github_username="placerda"
-   github_use_ssh="true"
-   github_template_repo="azure/llmops-project-template"
-   github_new_repo="placerda/my-rag-project"
-   github_new_repo_visibility="public"
-   azd_dev_env_provision="true"
-   azd_dev_env_name="rag-project-dev"
-   azd_dev_env_subscription="12345678-1234-1234-1234-123456789098"
-   azd_dev_env_location="eastus2"
+   cp bootstrap.properties.template bootstrap.properties
+  
    ```
 
 3. **Authenticate with Azure and GitHub**
@@ -114,57 +46,86 @@ You will also need:
    gh auth login
    ```
 
-4. **Run the Bootstrap Script**
 
-   The bootstrap script is available in two versions: Bash (`bootstrap.sh`) and PowerShell (`bootstrap.ps1`). 
+4. `bootstrap.properties` 파일 수정
 
-   Run the appropriate script for your environment.
+   ```properties
+   # GitHub Repo Creation Properties
+   github_username="<username>"
+   # github_use_ssh: true will use ssh, false will use https
+   github_use_ssh="false"
+   github_template_repo="<template_organization_id>/<repo-template-name>"
+   github_new_repo="<your_github_user_or_organization_id>/<new-repo-name>"
+   # project_visibility: public, private, internal
+   github_new_repo_visibility="public" 
 
-   **For Bash:**
+   # Dev Environment Provision Properties
+   azd_dev_env_provision="true"
+   azd_dev_env_name="<dev_env_name>"
+   azd_dev_env_subscription="<subscription_id>"
+   azd_dev_env_location="<location>"
+   ```
+단, prod, qa 환경을 별도로 구성한다면 각각 설정 필요
 
-   ```sh
-   ./bootstrap.sh
+   * check quota
+
+   > [!Note]
+   > 리전은 AI 기반 Evaluator를 사용하기 위해 ["eastus2", "francecentral", "uksouth", "swedencentral"]
+   > https://learn.microsoft.com/en-us/azure/ai-studio/how-to/develop/flow-evaluate-sdk#risk-and-safety-evaluators
+
+
+   ```bash
+   subscriptionId="replace by your subscription id" 
+   region="swedencentral"
+   results=$(az cognitiveservices usage list --subscription $subscriptionId --location $region) 
+   echo $results | jq -r '.[] | select(.name.value | test("Standard.gpt-4"))'
+   echo $results | jq -r '.[] | select(.name.value | test("OpenAI.Standard.text-embedding-ada-002"))'
+   echo $results | jq -r '.[] | select(.name.value | test("Standard.gpt-35-turbo"))' 
    ```
 
-   **For PowerShell:**
-
-   ```powershell
-   .\bootstrap.ps1
-   ```
-
-    At the end of its execution, the script will have created and initialized the new repository and provisioned the development environment resources, provided you set `azd_dev_env_provision` to true. During its execution, the script checks if the new repository exists and creates it if it does not. It then clones the template repository and mirrors it to the new repository. Additionally, it sets the default branch for the new repository.
-
-5. **Create a Service Principal**
-
-   Create a service principal using the following command:
+5. **Service Principal생성**
 
    ```sh
    az ad sp create-for-rbac --name "<your-service-principal-name>" --role Owner --scopes /subscriptions/<your-subscription-id> --sdk-auth
    ```
 
-   > Ensure that the output information created here is properly saved for future use.
+   > 여기에서 생성한 출력 정보가 나중에 사용할 수 있도록 제대로 저장되었는지 확인합니다.
 
-6. **Set GitHub Environment Variables**
+6. Github 설정
 
-   Go to the newly created project repository and set the following GitHub environment variables and secret for three environments: `dev`, `qa`, and `prod`.
+   ```bash
+   ./bootstrap.sh
+   ```
+
+7. dev 환경 인프라 Provision
+
+   ```bash
+   ./provision.sh
+   ```
+
+8. **Set GitHub Environment Variables**
+
+   리파지토리에서 아래 Variable 생성 확인 (`dev`, `qa`, and `prod` 별로 각각)
 
    - **Environment Variables:**
      - `AZURE_ENV_NAME`
      - `AZURE_LOCATION`
      - `AZURE_SUBSCRIPTION_ID`
+
+   아래 secret 값은 **5**에서 생성한 값으로 직접 설정  
    
    - **Secret:**
      - `AZURE_CREDENTIALS`
 
-   After creating the variables and secret, your Environments page should resemble the following example:
+   Variable와 secret을 만들고 나면 환경 페이지가 다음 예시와 비슷해집니다:
    
    ![Environments Page](../media/bootstrapping_environments.png)
    
-   Below is an example of environment variable values for a development environment:
+   다음은 개발 환경에 대한 환경 변수 값의 예입니다:
    
    ![Environment Variables](../media/bootstrapping_env_vars.png)
    
-   The `AZURE_CREDENTIALS` secret should be formatted as follows:
+   `AZURE_CREDENTIALS` secret 샘플
     
    ```json
    {
@@ -175,12 +136,12 @@ You will also need:
    }
    ```
 
-   > **Note:** If you are only interested in experimenting with this accelerator, you can use the same subscription, varying only `AZURE_ENV_NAME` for each enviornment.
+   > **Note:** 이 Solution Accelerator 를 실험하는 데만 관심이 있는 경우, 동일한 구독을 사용하되 각 환경에 대해 `AZURE_ENV_NAME`만 변경하면 됩니다.
 
 7. **Enable GitHub Actions**
 
-   Ensure that GitHub Actions are enabled in your repository, as in some cases, organizational policies may not have this feature enabled by default. To do this, simply click the button indicated in the figure below:
+   조직 정책에 따라 이 기능이 기본적으로 활성화되어 있지 않을 수도 있으므로 리포지토리에서 GitHub 작업이 활성화되어 있는지 확인하세요. 이렇게 하려면 아래 그림에 표시된 버튼을 클릭하기만 하면 됩니다:
 
    ![Enable Actions](../media/enable_github_actions.png)
 
-That's all! Your new project is now bootstrapped and ready to go.
+여기까지입니다! 이제 새 프로젝트가 부트스트랩되어 실행할 준비가 되었습니다.
