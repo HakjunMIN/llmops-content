@@ -94,7 +94,7 @@ runs:
           "PROMPTFLOW_WORKER_NUM"
         )
 
-        manual_environment=${{ inputs.MANUAL_PROVISIONING || 'false' }}
+        manual_environment=${{ inputs.MANUAL_PROVISIONING || 'true' }}
         if [ "$manual_environment" = "true" ]; then
           echo "🔶 | Manual Provisioning enabled. Action will just output variable values."
           # Set environment variables
