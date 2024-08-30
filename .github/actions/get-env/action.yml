@@ -61,7 +61,7 @@ runs:
       with:
           python-version: 3.8
 
-    - name: Provision environment
+    - name: get environment
       shell: bash
       id: setup-env-step
       run: |
@@ -94,106 +94,51 @@ runs:
           "PROMPTFLOW_WORKER_NUM"
         )
 
-        manual_environment=${{ inputs.MANUAL_PROVISIONING || 'false' }}
-        if [ "$manual_environment" = "true" ]; then
-          echo "🔶 | Manual Provisioning enabled. Action will just output variable values."
-          # Set environment variables
-          for VAR in "${VARIABLES[@]}"; do
-            echo "$VAR=$VALUE_GHAENV" >> "$GITHUB_OUTPUT"
-            echo "$VAR=$VALUE_GHAENV"
-            export $VAR=$VALUE            
-          done
+        
+        # Initialize azd
+        export AZURE_SUBSCRIPTION_ID="${{ inputs.AZURE_SUBSCRIPTION_ID }}"
+        export AZURE_LOCATION="${{ inputs.AZURE_LOCATION }}"
+        azd init -e ${{ inputs.AZURE_ENV_NAME }} -l $AZURE_LOCATION -s $AZURE_SUBSCRIPTION_ID
 
-        else
-          # Initialize azd
-          export AZURE_SUBSCRIPTION_ID="${{ inputs.AZURE_SUBSCRIPTION_ID }}"
-          export AZURE_LOCATION="${{ inputs.AZURE_LOCATION }}"
-          azd init -e ${{ inputs.AZURE_ENV_NAME }} -l $AZURE_LOCATION -s $AZURE_SUBSCRIPTION_ID
+        # Run azd env refresh and capture outputs
+        set +e
+        output=$(azd env refresh -e "${{ inputs.AZURE_ENV_NAME }}" 2>&1)
+        exit_code=$?
+        set -e
+       
+        # Define azd deployAppService parameter
+        export AZURE_DEPLOY_APP_SERVICE=${{ inputs.AZURE_DEPLOY_APP_SERVICE }}
+        [ -n "$AZURE_DEPLOY_APP_SERVICE" ] && echo 'AZURE_DEPLOY_APP_SERVICE is ${AZURE_DEPLOY_APP_SERVICE}' || echo 'AZURE_DEPLOY_APP_SERVICE is empty defaulting to true'
+        [ -n "$AZURE_DEPLOY_APP_SERVICE" ] && azd env set AZURE_DEPLOY_APP_SERVICE ${AZURE_DEPLOY_APP_SERVICE} || azd env set AZURE_DEPLOY_APP_SERVICE true
+      
+        # Set environment variables by getting them from the GitHub environment or the last deployment. 
+        # GitHub environment variables take precedence over those from the last deployment.
+        # Here's how it works for each variable:
+        # - The variable takes the value from the GitHub Environment if available; otherwise, it uses the latest deployment value.
+        # - If the new value differs from the latest deployment, the AZD variable is updated.
+        # - Finally, it adds the variable to the GitHub output for use by the calling job.
 
-          # Run azd env refresh and capture outputs
-          set +e
-          output=$(azd env refresh -e "${{ inputs.AZURE_ENV_NAME }}" 2>&1)
-          exit_code=$?
-          set -e
-          if [ $exit_code -ne 0 ]; then
-            echo "🔶 | No previous deployment exists or failed."
-            deployment_exists=false
-          else
-            echo "🔶 | Previous deployment exists." 
-            deployment_exists=true
-          fi
-          
-          # Define azd deployAppService parameter
-          export AZURE_DEPLOY_APP_SERVICE=${{ inputs.AZURE_DEPLOY_APP_SERVICE }}
-          [ -n "$AZURE_DEPLOY_APP_SERVICE" ] && echo 'AZURE_DEPLOY_APP_SERVICE is ${AZURE_DEPLOY_APP_SERVICE}' || echo 'AZURE_DEPLOY_APP_SERVICE is empty defaulting to true'
-          [ -n "$AZURE_DEPLOY_APP_SERVICE" ] && azd env set AZURE_DEPLOY_APP_SERVICE ${AZURE_DEPLOY_APP_SERVICE} || azd env set AZURE_DEPLOY_APP_SERVICE true
-          
-          # Define azd principalType parameter
-          azd env set AZURE_PRINCIPAL_TYPE 'ServicePrincipal'
+        echo "${{ inputs.AZURE_ENV_NAME }} environment variables values." 
+        
+        # Set environment variables and update AZD variables 
+        
+        for VAR in "${VARIABLES[@]}"; do
+          VALUE_OUTPUT=$(azd env get-values -e ${{ inputs.AZURE_ENV_NAME }} | grep $VAR | cut -d'=' -f2 | tr -d '"' || true)
+          VALUE_GHAENV=$(eval echo \${$VAR})
+          [ -n "$VALUE_GHAENV" ] && VALUE=$VALUE_GHAENV || VALUE=$VALUE_OUTPUT
+          [ -n "$VALUE" ] && [ "$VALUE" != "$VALUE_OUTPUT" ] && azd env set $VAR $VALUE
+          echo "$VAR=$VALUE" >> "$GITHUB_OUTPUT"
+          echo "$VAR=$VALUE"
+          export $VAR=$VALUE            
+        done
 
-          # Checking if previous deployment exists
-          if [  "$deployment_exists" = false ]; then
-            echo "Provisioning environment..." 
-            azd provision --no-prompt
-          fi
+        # Define azd deployAppService parameter
+        export AZURE_DEPLOY_APP_SERVICE=${{ inputs.AZURE_DEPLOY_APP_SERVICE }}
+        [ -n "$AZURE_DEPLOY_APP_SERVICE" ] && echo 'AZURE_DEPLOY_APP_SERVICE is ${AZURE_DEPLOY_APP_SERVICE}' || echo 'AZURE_DEPLOY_APP_SERVICE is empty defaulting to true'
+        [ -n "$AZURE_DEPLOY_APP_SERVICE" ] && azd env set AZURE_DEPLOY_APP_SERVICE ${AZURE_DEPLOY_APP_SERVICE} || azd env set AZURE_DEPLOY_APP_SERVICE true
+        
 
-          # Checking if the resource group exists
-          export AZURE_RESOURCE_GROUP=$(azd env get-values -e ${{ inputs.AZURE_ENV_NAME }} | grep AZURE_RESOURCE_GROUP | cut -d'=' -f2 | tr -d '"' || true)
-          if [ -z "$AZURE_RESOURCE_GROUP" ]; then
-            resource_group_exist=false
-          else
-            resource_group_exist=$(az group exists --name "$AZURE_RESOURCE_GROUP")  
-          fi        
-          echo "🔶 | Resource group ${AZURE_RESOURCE_GROUP:-'-'} exist status: $resource_group_exist"
-
-          # Previous deployment exists but the resource group doesn't. 
-          # This situation occurs if you made a deployment and then deleted the resource group.
-          # Resource group may also be empty because previous deployment finished with failure.
-          # In both cases we recreate resources
-          if [ "$deployment_exists" = true ] && [ "$resource_group_exist" = false ]; then
-            echo "🔶 | Deployment exists but resource group $AZURE_RESOURCE_GROUP doesn't, cleaning resources."
-            azd down --force --purge
-            rm -rf .azure
-            azd init -e ${{ inputs.AZURE_ENV_NAME }} -l $AZURE_LOCATION -s $AZURE_SUBSCRIPTION_ID
-          fi           
-
-          # Set environment variables by getting them from the GitHub environment or the last deployment. 
-          # GitHub environment variables take precedence over those from the last deployment.
-          # Here's how it works for each variable:
-          # - The variable takes the value from the GitHub Environment if available; otherwise, it uses the latest deployment value.
-          # - If the new value differs from the latest deployment, the AZD variable is updated.
-          # - Finally, it adds the variable to the GitHub output for use by the calling job.
-
-          echo "${{ inputs.AZURE_ENV_NAME }} environment variables values." 
-          
-          # Set environment variables and update AZD variables 
-          
-          for VAR in "${VARIABLES[@]}"; do
-            VALUE_OUTPUT=$(azd env get-values -e ${{ inputs.AZURE_ENV_NAME }} | grep $VAR | cut -d'=' -f2 | tr -d '"' || true)
-            VALUE_GHAENV=$(eval echo \${$VAR})
-            [ -n "$VALUE_GHAENV" ] && VALUE=$VALUE_GHAENV || VALUE=$VALUE_OUTPUT
-            [ -n "$VALUE" ] && [ "$VALUE" != "$VALUE_OUTPUT" ] && azd env set $VAR $VALUE
-            echo "$VAR=$VALUE" >> "$GITHUB_OUTPUT"
-            echo "$VAR=$VALUE"
-            export $VAR=$VALUE            
-          done
-
-          # Define azd deployAppService parameter
-          export AZURE_DEPLOY_APP_SERVICE=${{ inputs.AZURE_DEPLOY_APP_SERVICE }}
-          [ -n "$AZURE_DEPLOY_APP_SERVICE" ] && echo 'AZURE_DEPLOY_APP_SERVICE is ${AZURE_DEPLOY_APP_SERVICE}' || echo 'AZURE_DEPLOY_APP_SERVICE is empty defaulting to true'
-          [ -n "$AZURE_DEPLOY_APP_SERVICE" ] && azd env set AZURE_DEPLOY_APP_SERVICE ${AZURE_DEPLOY_APP_SERVICE} || azd env set AZURE_DEPLOY_APP_SERVICE true
-          
-          # Define azd principalType parameter
-          azd env set AZURE_PRINCIPAL_TYPE 'ServicePrincipal'
-
-          # Previous deployment exists. Update provisioned resources in case template has changed.
-          if [  "$deployment_exists" = true ]; then
-            echo "🔶 | Previous deployment exists. Updating provisioned resources..."
-            azd provision --no-prompt
-          fi
-        fi
-
-        # Updating azd environment variables after provisioning
+        # Updating azd environment variables
 
         for VAR in "${VARIABLES[@]}"; do
           VALUE_OUTPUT=$(azd env get-values -e ${{ inputs.AZURE_ENV_NAME }} | grep $VAR | cut -d'=' -f2 | tr -d '"' || true)
