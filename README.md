@@ -19,25 +19,64 @@ LLMOps 솔루션 액셀러레이터에 오신 것을 환영합니다! 이 프로
 > AI Evaluation 리전 선택 ("eastus2", "francecentral", "uksouth", "swedencentral")
 > 해당 리전에 쿼터가 남아있는지 반드시 확인 후 리전 선택 [쿼터확인](documentation/check_your_quota.md)
 
-
 ## Quick start
 
-```bash
+    ```bash
 
-cp ./bootstrap.properties.template ./bootstrap.properties
+    cp ./bootstrap.properties.template ./bootstrap.properties
 
-# modify bootstrap.properties
+    # modify bootstrap.properties
 
-az login
-azd auth login
-gh auth login
+    az login
+    azd auth login
+    gh auth login
 
-# GitHub설정
-./bootstrap.sh 
+    # GitHub설정
+    ./bootstrap.sh 
 
-# 인프라 프로비전
-./provision.sh
-```
+    # 인프라 프로비전
+    ./provision.sh
+    ```
+
+### Service Principal
+
+
+   ```sh
+   az ad sp create-for-rbac --name "<your-service-principal-name>" --role Owner --scopes /subscriptions/<your-subscription-id>
+
+   {
+    "clientId": "your-client-id",
+    "clientSecret": "your-client-secret",
+    "subscriptionId": "your-subscription-id",
+    "tenantId": "your-tenant-id",
+    "activeDirectoryEndpointUrl": "https://login.microsoftonline.com",
+    "resourceManagerEndpointUrl": "https://management.azure.com/",
+    "activeDirectoryGraphResourceId": "https://graph.windows.net/",
+    "sqlManagementEndpointUrl": "https://management.core.windows.net:8443/",
+    "galleryEndpointUrl": "https://gallery.azure.com/",
+    "managementEndpointUrl": "https://management.core.windows.net/"
+    }
+   
+   ```
+
+
+
+### Set GitHub Environment Variables
+
+    새로 만든 프로젝트 리포지토리로 이동하여 세 가지 환경에 대해 다음 GitHub 환경 변수가 설정되어 있는지 확인합니다. `dev`, `qa`, and `prod`.
+    
+    - **Environment Variables:**
+     - `AZURE_ENV_NAME`
+     - `AZURE_LOCATION`
+     - `AZURE_SUBSCRIPTION_ID`
+   
+    Service Principal 생성 후 출력된 credential 정보를 각 환경별 `secret`에 설정합니다.
+
+    - **Secret:**
+     - `AZURE_CREDENTIALS`
+
+
+
 
 ## Documentation
 
