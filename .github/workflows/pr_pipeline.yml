@@ -46,6 +46,7 @@ jobs:
   #       run: |
   #         echo "Run Bandit"
 
+
   get-env-job:
     if: ${{ github.repository != 'Azure/llmops-project-template' }}
     runs-on: ubuntu-latest
@@ -62,6 +63,8 @@ jobs:
       AZURE_OPENAI_API_VERSION: ${{ steps.get-env.outputs.AZURE_OPENAI_API_VERSION }}
     steps: 
       - uses: actions/checkout@v4
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
       - name: Get environment variables
         uses: ./.github/actions/get-env
         id: get-env
