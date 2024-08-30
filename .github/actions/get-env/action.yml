@@ -103,11 +103,6 @@ runs:
         exit_code=$?
         set -e
        
-        # Define azd deployAppService parameter
-        export AZURE_DEPLOY_APP_SERVICE=${{ inputs.AZURE_DEPLOY_APP_SERVICE }}
-        [ -n "$AZURE_DEPLOY_APP_SERVICE" ] && echo 'AZURE_DEPLOY_APP_SERVICE is ${AZURE_DEPLOY_APP_SERVICE}' || echo 'AZURE_DEPLOY_APP_SERVICE is empty defaulting to true'
-        [ -n "$AZURE_DEPLOY_APP_SERVICE" ] && azd env set AZURE_DEPLOY_APP_SERVICE ${AZURE_DEPLOY_APP_SERVICE} || azd env set AZURE_DEPLOY_APP_SERVICE true
-      
         # Set environment variables by getting them from the GitHub environment or the last deployment. 
         # GitHub environment variables take precedence over those from the last deployment.
         # Here's how it works for each variable:
@@ -133,19 +128,6 @@ runs:
         export AZURE_DEPLOY_APP_SERVICE=${{ inputs.AZURE_DEPLOY_APP_SERVICE }}
         [ -n "$AZURE_DEPLOY_APP_SERVICE" ] && echo 'AZURE_DEPLOY_APP_SERVICE is ${AZURE_DEPLOY_APP_SERVICE}' || echo 'AZURE_DEPLOY_APP_SERVICE is empty defaulting to true'
         [ -n "$AZURE_DEPLOY_APP_SERVICE" ] && azd env set AZURE_DEPLOY_APP_SERVICE ${AZURE_DEPLOY_APP_SERVICE} || azd env set AZURE_DEPLOY_APP_SERVICE true
-        
-
-        # Updating azd environment variables
-
-        for VAR in "${VARIABLES[@]}"; do
-          VALUE_OUTPUT=$(azd env get-values -e ${{ inputs.AZURE_ENV_NAME }} | grep $VAR | cut -d'=' -f2 | tr -d '"' || true)
-          VALUE_GHAENV=$(eval echo \${$VAR})
-          [ -n "$VALUE_GHAENV" ] && VALUE=$VALUE_GHAENV || VALUE=$VALUE_OUTPUT
-          [ -n "$VALUE" ] && [ "$VALUE" != "$VALUE_OUTPUT" ] && azd env set $VAR $VALUE
-          echo "$VAR=$VALUE" >> "$GITHUB_OUTPUT"
-          echo "$VAR=$VALUE"
-          export $VAR=$VALUE            
-        done 
 
         # Load sample data if needed
 
