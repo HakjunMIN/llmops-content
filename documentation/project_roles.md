@@ -1,27 +1,27 @@
 
 # Typical Roles in an LLM Project
 
-This section outlines the key roles within an LLM project and their responsibilities, providing a clear understanding of each position's contributions. These roles are crucial for the successful implementation and management of the project. The following image provides a visual representation of these roles:
+이 섹션에서는 LLM 프로젝트 내의 주요 역할과 각 직책의 책임에 대해 간략하게 설명하여 각 직책의 기여도를 명확하게 이해할 수 있도록 합니다. 이러한 역할은 프로젝트의 성공적인 구현과 관리에 매우 중요합니다. 다음 이미지는 이러한 역할을 시각적으로 표현한 것입니다:
 
 ![Header](../media/project_roles.png)
 
 
 ## AI Engineer
 
-- **Leading Development**: Guides the project's development, making sure everything runs smoothly.
-- **Building the App**: Works on coding and putting together different parts of the application.
-- **Creating Prompts**: Designs the prompts the application uses, ensuring they're effective and meet project needs.
-- **Managing Data**: Organizes, chunk and labels data, sets up custom indexes.
-- **Overseeing Data Flow**: Manages data flow systems for seamless integration.
-- **Production Readiness**: Guarantees the solution is reliable and deployment-ready.
+- **개발 리드**: 프로젝트의 개발을 리드하고 모든 것이 원활하게 진행되도록 합니다.
+- **앱 구축**: 애플리케이션의 여러 부분을 코딩하고 조합하는 작업을 수행합니다.
+- **프롬프트 만들기**: 애플리케이션에서 사용하는 프롬프트를 디자인하여 효과적이고 프로젝트 요구 사항을 충족하는지 확인합니다.
+- **데이터 관리**: 데이터를 정리하고, 청크 및 레이블을 지정하고, 사용자 지정 인덱스를 설정합니다.
+- **데이터 흐름 감독**: 원활한 통합을 위해 데이터 흐름 시스템을 관리합니다.
+- **프로덕션 준비**: 솔루션의 안정성과 배포 준비를 보장합니다.
 
 ## Data Scientist
 
-- **Improving Search**: Enhances retrieval efficiency and accuracy.
-- **Working on Prompts with AI Engineers**: Helps fine-tune the prompts with AI Engineers.
-- **Tuning the Models**: If needed, adjusts models to improve how they perform and the results they give.
+- **검색 개선**: 검색 효율성과 정확성을 향상시킵니다.
+- **AI 엔지니어와 함께 프롬프트 작업**: AI 엔지니어와 함께 프롬프트를 미세 조정하는 데 도움을 줍니다.
+- **모델 튜닝**: 필요한 경우 모델을 조정하여 성능과 결과를 개선합니다.
 
 ## Infrastructure Team / IT Pro
 
-- **Setting Up Resources**: Manages technical resources for project setup.
-- **Handling Access**: Manages access rights, ensuring security and project accessibility.
+- **리소스 설정**: 프로젝트 설정을 위한 기술 리소스를 관리합니다.
+- **액세스 처리**: 액세스 권한을 관리하여 보안 및 프로젝트 접근성을 보장합니다.

@@ -1,33 +1,31 @@
 # Repository Structure
 
-This accelerator utilizes project templates as its foundation. Therefore, the repository system is structured to include a primary repository, which contains comprehensive documentation and bootstrapping scripts for initiating projects using these templates. To maintain simplicity and promote cohesion within each repository, a separate repository is allocated for each project template. Additionally, dependencies between the primary repository and the template repositories are minimized. The diagram below illustrates the proposed structure.
+이 액셀러레이터는 프로젝트 템플릿을 기본으로 활용합니다. 따라서 리포지토리 시스템은 이러한 템플릿을 사용하여 프로젝트를 시작하기 위한 포괄적인 문서와 부트스트랩 스크립트가 포함된 기본 리포지토리를 포함하도록 구성되어 있습니다. 각 리포지토리 내에서 단순성을 유지하고 일관성을 유지하기 위해 각 프로젝트 템플릿에 대해 별도의 리포지토리가 할당됩니다. 또한 기본 리포지토리와 템플릿 리포지토리 간의 종속성이 최소화됩니다. 아래 다이어그램은 제안된 구조를 보여줍니다.
 
 ![Header](../media/git_workflow_repository_structure.png)
 
 ## Repositories and their Directories
 
-This section describes the directory structure used in the LLMOps accelerator. By following this directory structure, teams can ensure a consistent and organized approach to developing and managing their LLM projects.
+이 섹션에서는 LLMOps 액셀러레이터에서 사용되는 디렉터리 구조를 설명합니다. 이 디렉터리 구조를 따르면 팀은 LLM 프로젝트를 개발하고 관리하는 데 있어 일관되고 체계적인 접근 방식을 보장할 수 있습니다.
 
 ### LLMOps
 
-The `LLMOps` repository is the central hub, offering detailed documentation and scripts for initializing projects with these templates. It allows direct use or customization through copying/forking. It includes the following:
-
-- **documentation**: Holds setup guides and concept explanations for the LLMOps accelerator.
-- **bootstrapping script**: Initializes and configures new projects using LLMOps templates.
+`LLMOps` 리포지토리는 이러한 템플릿으로 프로젝트를 초기화하기 위한 자세한 문서와 스크립트를 제공하는 중앙 허브입니다. 직접 사용하거나 복사/포크를 통해 커스터마이징할 수 있습니다. 여기에는 다음이 포함됩니다:
+- **documentation**: LLMOps 가속기에 대한 설정 가이드와 개념 설명이 포함되어 있습니다.
+- **bootstrapping script**: LLMOps 템플릿을 사용하여 새 프로젝트를 초기화하고 구성합니다.
 
 ### LLM Project-template
 
-The `LLM Project-template` represents repositories serving as templates for LLM projects, which can be utilized to initiate new projects. While the structure of project templates may differ based on specific needs, a typical template includes the following subdirectories:
+`LLM 프로젝트 템플릿`은 새 프로젝트를 시작하는 데 사용할 수 있는 LLM 프로젝트의 템플릿 역할을 하는 리포지토리를 나타냅니다. 프로젝트 템플릿의 구조는 필요에 따라 다를 수 있지만, 일반적인 템플릿에는 다음과 같은 하위 디렉터리가 포함됩니다:
 
-- **.github**: GitHub-specific workflows, and actions used for continuous integration and deployment.
-- **data**: This directory is used to store datasets required for training and evaluation.
-- **evaluations**: Contains scripts and resources for evaluating the performance of the trained models.
-- **infra**: Holds infrastructure-related code and configurations, such as Bicep or Terraform scripts.
-- **src**: Source code for the project, including orchestration flows, model definitions, training scripts, and utilities.
-- **tests**: Contains test cases and scripts to ensure the quality and correctness of the codebase.
+- **.github**: 지속적인 통합 및 배포에 사용되는 GitHub 전용 워크플로 및 작업.
+- **data**: 이 디렉토리는 교육 및 평가에 필요한 데이터 세트를 저장하는 데 사용됩니다.
+- **evaluations**: 학습된 모델의 성능을 평가하기 위한 스크립트와 리소스를 유지합니다.
+- **infra**: Bicep 또는 Terraform 스크립트와 같은 인프라 관련 코드 및 구성을 보관합니다.
+- **src**: 오케스트레이션 흐름, 모델 정의, 교육 스크립트 및 유틸리티를 포함한 프로젝트의 소스 코드입니다.
+- **tests**: 코드베이스의 품질과 정확성을 보장하기 위한 테스트 케이스와 스크립트가 포함되어 있습니다.
 
-For an example of a project template, you can refer to this [RAG with Azure AI Studio and Promptflow](https://github.com/azure/llmops-project-template) template.
+프로젝트 템플릿의 예는 다음을 참조하세요. [RAG with Azure AI Studio and Promptflow](https://github.com/azure/llmops-project-template) template.
 
 ### Project A (Bootstrapped Project)
-
-`Project A` represents a project that has been bootstrapped from the template. We're calling it Project A for illustration purposes, but it can be named appropriately for your use case. It will have the same initial directory structure as the template.
+`프로젝트 A`는 템플릿에서 부트스트랩된 프로젝트를 나타냅니다. 여기서는 예시를 위해 프로젝트 A라고 부르지만 사용 사례에 따라 적절한 이름을 지정할 수 있습니다. 템플릿과 동일한 초기 디렉토리 구조를 갖습니다.

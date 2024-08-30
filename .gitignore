@@ -159,4 +159,4 @@ cython_debug/
 
 # Bicep build artifacts
 *.bicep
-*.json
+infra/*.json

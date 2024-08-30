@@ -1,7 +1,6 @@
 # Bootstrapping a New Project
 
-In this section, you will learn how to start a new project using a project template. The bootstrapping process will create a new project repository on GitHub and populate it with content from the project template. Additionally, it will set up the development environment for your project, ensuring that you have everything you need to get started quickly and efficiently.
-
+이 섹션에서는 프로젝트 템플릿을 사용하여 새 프로젝트를 시작하는 방법을 배웁니다. 부트스트랩 프로세스는 GitHub에 새 프로젝트 리포지토리를 만들고 프로젝트 템플릿의 콘텐츠로 채웁니다. 또한 프로젝트의 개발 환경을 설정하여 프로젝트를 빠르고 효율적으로 시작하는 데 필요한 모든 것을 갖추도록 합니다.
 ## Prerequisites
 
 * [Azure CLI (az)](https://aka.ms/install-az) - to manage Azure resources.
@@ -63,6 +62,23 @@ You will also need:
      - `azd_dev_env_location`: The Azure region for your dev environment. Ex: *eastus2*.
 
     > The dev environment resources will be created in the selected subscription and region. This decision should consider the quota available for the resources to be created in the region, as well as the fact that some resources have specific features enabled only in certain regions. Therefore, ensure that the resources to be created by the IaC of your template project have quota and availability in the chosen subscription and region. More information about the resources to be created can be found on the template page, as shown in this project template example: [LLMOps Project Template Resources](https://github.com/Azure/llmops-project-template/blob/main/README.md#project-resources).
+
+
+   * check quota
+
+   > [!Note]
+   > 리전은 AI 기반 Evaluator를 사용하기 위해 ["eastus2", "francecentral", "uksouth", "swedencentral"]
+   > https://learn.microsoft.com/en-us/azure/ai-studio/how-to/develop/flow-evaluate-sdk#risk-and-safety-evaluators
+
+
+   ```bash
+   subscriptionId="replace by your subscription id" 
+   region="swedencentral"
+   results=$(az cognitiveservices usage list --subscription $subscriptionId --location $region) 
+   echo $results | jq -r '.[] | select(.name.value | test("Standard.gpt-4"))'
+   echo $results | jq -r '.[] | select(.name.value | test("OpenAI.Standard.text-embedding-ada-002"))'
+   echo $results | jq -r '.[] | select(.name.value | test("Standard.gpt-35-turbo"))' 
+   ```
 
    Here is an example of the `bootstrap.properties` file:
 

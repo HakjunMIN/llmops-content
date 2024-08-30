@@ -2,25 +2,52 @@
 
 ![Header](media/llmopsheader.png)
 
-Welcome to the LLMOps Solution Accelerator! This project provides a ready-to-run LLMOps solution, with a primary focus on CI/CD pipeline implementation. It includes essential concepts designed to help you seamlessly adopt LLMOps practices into your projects.
+LLMOps 솔루션 액셀러레이터에 오신 것을 환영합니다! 이 프로젝트는 바로 실행할 수 있는 LLMOps 솔루션을 제공하며, 주로 CI/CD 파이프라인 구현에 중점을 두고 있습니다. 여기에는 LLMOps 사례를 프로젝트에 원활하게 도입하는 데 도움이 되도록 설계된 필수 개념이 포함되어 있습니다.
  
+## LLMOps Pipeline Overview
+
+![llmops-pipeline](./media/git_workflow_pipelines.png)
+
 ## Highlights
 
-- Bootstrap your project in under an hour
-- Provision resources with Infrastructure as Code
-- Easy-to-configure and extend templates
-- Leverage Azure AI Studio
+- 1시간 이내에 프로젝트 부트스트랩
+- 인프라스트럭처를 코드로 프로비저닝하여 리소스 프로비저닝
+- 손쉬운 구성 및 템플릿 확장
+- Azure AI Studio 활용
 
+> ![Note]
+> AI Evaluation 리전 선택 ("eastus2", "francecentral", "uksouth", "swedencentral")
+> 해당 리전에 쿼터가 남아있는지 반드시 확인 후 리전 선택 [쿼터확인](documentation/check_your_quota.md)
+
+
+## Quick start
+
+```bash
+
+cp ./bootstrap.properties.template ./bootstrap.properties
+
+# modify bootstrap.properties
+
+az login
+azd auth login
+gh auth login
+
+# GitHub설정
+./bootstrap.sh 
+
+# 인프라 프로비전
+./provision.sh
+```
 
 ## Documentation
 
-Explore this set of articles to navigate and implement the accelerator smoothly. These resources clarify the repository structure, Git workflow, and reference architecture, providing a strong foundation for successful execution.
+이 문서 세트를 살펴보고 가속기를 원활하게 탐색하고 구현하세요. 이러한 리소스는 리포지토리 구조, Git 워크플로 및 참조 아키텍처를 명확히 설명하여 성공적인 실행을 위한 강력한 기반을 제공합니다.
 
-1. [Repository Structure](documentation/repository_structure.md): Describes how the repository structure is organized.
-2. [Git Workflow and Pipelines](documentation/git_workflow.md): Explains the Git workflow and CI/CD pipelines used in the accelerator.
-3. [Reference Architecture](documentation/reference_architecture.md): Reference architecture that this accelerator is based on.
-1. [RAG Project Template](https://github.com/azure/llmops-project-template): Offers a ready-to-use RAG project template.
-1. [LLM Project Roles](documentation/project_roles.md): Details the various roles in an LLM project and their responsibilities.
+1. [Repository Structure](documentation/repository_structure.md): 리포지토리 구조가 어떻게 구성되는지 설명합니다.
+2. [Git Workflow and Pipelines](documentation/git_workflow.md): 가속기에서 사용되는 Git 워크플로와 CI/CD 파이프라인에 대해 설명합니다.
+3. [Reference Architecture](documentation/reference_architecture.md): 이 가속기의 기반이 되는 레퍼런스 아키텍처입니다.
+1. [RAG Project Template](https://github.com/azure/llmops-project-template): 바로 사용할 수 있는 RAG 프로젝트 템플릿을 제공합니다.
+1. [LLM Project Roles](documentation/project_roles.md): LLM 프로젝트의 다양한 역할과 그 책임에 대해 자세히 설명합니다.
 
 ## How-to
 

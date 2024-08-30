@@ -8,7 +8,19 @@ github_new_repo="<your_github_user_or_organization_id>/<new-repo-name>"
 github_new_repo_visibility="public" 
 
 # Dev Environment Provision Properties
-azd_dev_env_provision="<true_or_false>"
+azd_dev_env_provision="true"
 azd_dev_env_name="<dev_env_name>"
 azd_dev_env_subscription="<subscription_id>"
 azd_dev_env_location="<location>"
+
+# QA Environment Provision Properties
+azd_qa_env_provision="<true_or_false>"
+azd_qa_env_name="<qa_env_name>"
+azd_qa_env_subscription="<subscription_id>"
+azd_qa_env_location="<location>"
+
+# PROD Environment Provision Properties
+azd_prod_env_provision="<true_or_false>"
+azd_prod_env_name="<prod_env_name>"
+azd_prod_env_subscription="<subscription_id>"
+azd_prod_env_location="<location>"
