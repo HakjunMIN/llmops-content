@@ -97,7 +97,7 @@ runs:
         # Run azd env refresh and capture outputs
         export AZURE_SUBSCRIPTION_ID="${{ inputs.AZURE_SUBSCRIPTION_ID }}"
         export AZURE_LOCATION="${{ inputs.AZURE_LOCATION }}"
-        azd init -e ${{ inputs.AZURE_ENV_NAME }} -l $AZURE_LOCATION -s $AZURE_SUBSCRIPTION_ID
+        # azd init -e ${{ inputs.AZURE_ENV_NAME }} -l $AZURE_LOCATION -s $AZURE_SUBSCRIPTION_ID
         
         set +e
         output=$(azd env refresh -e "${{ inputs.AZURE_ENV_NAME }} -l $AZURE_LOCATION -s $AZURE_SUBSCRIPTION_ID --no-prompt" 2>&1)
