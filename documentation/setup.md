@@ -86,10 +86,11 @@ You will also need:
 5. **Service Principal생성**
 
    ```sh
-   az ad sp create-for-rbac --name "<your-service-principal-name>" --role Owner --scopes /subscriptions/<your-subscription-id> --sdk-auth
+   az ad sp create-for-rbac --name "<your-service-principal-name>" --role Owner --scopes /subscriptions/<your-subscription-id> 
    ```
 
-   > 여기에서 생성한 출력 정보가 나중에 사용할 수 있도록 제대로 저장되었는지 확인합니다.
+   >[!Important]
+   > 여기에서 생성한 출력 정보가 나중에 사용할 수 있도록 메모합니다.
 
 6. Github 설정
 
@@ -102,6 +103,25 @@ You will also need:
    ```bash
    ./provision.sh
    ```
+
+8. Service Principal 권한할당
+
+   ```bash
+8. **Service Principal 권한할당**
+
+   ```bash
+   CLIENT_ID="<your-client-id>"
+   
+   eval $(azd env get-values)
+
+   # Assign "Search Index Data Contributor" role to the service principal for Azure Search
+   az role assignment create --assignee $CLIENT_ID --role "8ebe5a00-799e-43f5-93ac-243d3dce84a7" --scope /subscriptions/$AZURE_SUBSCRIPTION_ID/resourceGroups/$AZUREAI_RESOURCE_GROUP/providers/Microsoft.Search/searchServices/$AZURE_SEARCH_NAME
+
+   # Assign "Azure AI Developer" role to the service principal for Azure AI project
+   az role assignment create --assignee $CLIENT_ID --role "64702f94-c441-49e6-a78b-ef80e0188fee" --scope /subscriptions/$AZURE_SUBSCRIPTION_ID/resourceGroups/$AZUREAI_RESOURCE_GROUP/providers/Microsoft.MachineLearningServices/workspaces/$AZUREAI_PROJECT_NAME
+   ```
+
+
 
 8. **Set GitHub Environment Variables**
 
