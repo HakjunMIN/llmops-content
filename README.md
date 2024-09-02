@@ -69,7 +69,7 @@ LLMOps 솔루션 액셀러레이터에 오신 것을 환영합니다! 이 프로
    
    ```
 
-##TODO 권한 (AI Search, AI Service......)
+
 
 ### Set GitHub Environment Variables
 
