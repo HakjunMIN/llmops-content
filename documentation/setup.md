@@ -121,9 +121,7 @@ You will also need:
    az role assignment create --assignee $CLIENT_ID --role "64702f94-c441-49e6-a78b-ef80e0188fee" --scope /subscriptions/$AZURE_SUBSCRIPTION_ID/resourceGroups/$AZUREAI_RESOURCE_GROUP/providers/Microsoft.MachineLearningServices/workspaces/$AZUREAI_PROJECT_NAME
    ```
 
-
-
-8. **Set GitHub Environment Variables**
+9. **Set GitHub Environment Variables**
 
    리파지토리에서 아래 Variable 생성 확인 (`dev`, `qa`, and `prod` 별로 각각)
 
