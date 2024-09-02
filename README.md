@@ -69,8 +69,6 @@ LLMOps 솔루션 액셀러레이터에 오신 것을 환영합니다! 이 프로
    
    ```
 
-
-
 ### Set GitHub Environment Variables
 
     새로 만든 프로젝트 리포지토리로 이동하여 세 가지 환경에 대해 다음 GitHub 환경 변수가 설정되어 있는지 확인합니다. `dev`, `qa`, and `prod`.
