@@ -119,6 +119,13 @@ You will also need:
 
    # Assign "Azure AI Developer" role to the service principal for Azure AI project
    az role assignment create --assignee $CLIENT_ID --role "64702f94-c441-49e6-a78b-ef80e0188fee" --scope /subscriptions/$AZURE_SUBSCRIPTION_ID/resourceGroups/$AZUREAI_RESOURCE_GROUP/providers/Microsoft.MachineLearningServices/workspaces/$AZUREAI_PROJECT_NAME
+   
+   # Assign "AcrPull" role to the service principal for Azure Container Registry
+   az role assignment create --assignee $CLIENT_ID --role "7f951dda-4ed3-4680-a7ca-43fe172d538d" --scope /subscriptions/$AZURE_SUBSCRIPTION_ID/resourceGroups/$AZUREAI_RESOURCE_GROUP/providers/Microsoft.ContainerRegistry/registries/$AZURE_CONTAINER_REGISTRY_NAME
+
+   # Assign "AcrPush" role to the service principal for Azure Container Registry
+   az role assignment create --assignee $CLIENT_ID --role "8311e382-0749-4cb8-b61a-304f252e45ec" --scope /subscriptions/$AZURE_SUBSCRIPTION_ID/resourceGroups/$AZUREAI_RESOURCE_GROUP/providers/Microsoft.ContainerRegistry/registries/$AZURE_CONTAINER_REGISTRY_NAME
+
    ```
 
 9. **Set GitHub Environment Variables**
