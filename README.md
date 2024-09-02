@@ -1,3 +1,7 @@
+[![CD QA Pipeline](https://github.com/HakjunMIN/llmops-content/actions/workflows/continuous_delivery_qa.yml/badge.svg)](https://github.com/HakjunMIN/llmops-content/actions/workflows/continuous_delivery_qa.yml)
+
+[![CD Prod Pipeline](https://github.com/HakjunMIN/llmops-content/actions/workflows/continuous_delivery_prod.yml/badge.svg)](https://github.com/HakjunMIN/llmops-content/actions/workflows/continuous_delivery_prod.yml)
+
 # Azure LLMOps Solution Accelerator
 
 ![Header](media/llmopsheader.png)
@@ -101,24 +105,9 @@ LLMOps 솔루션 액셀러레이터에 오신 것을 환영합니다! 이 프로
 1. [Setting up a new Project](documentation/setup.md)
 2. [Delivering a new Feature](documentation/delivering_new_feature.md)
 
-## Contributing
-
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a
-Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
-
-When you submit a pull request, a CLA bot will automatically determine whether you need to provide
-a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
-provided by the bot. You will only need to do this once across all repos using our CLA.
-
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
-contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
-
 ## Trademarks
-
-This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft 
-trademarks or logos is subject to and must follow 
-[Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
-Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
-Any use of third-party trademarks or logos are subject to those third-party's policies.
+이 프로젝트에는 프로젝트, 제품 또는 서비스에 대한 상표 또는 로고가 포함될 수 있습니다. Microsoft 
+상표 또는 로고의 승인된 사용은 다음 사항을 따라야 합니다. 
+[Microsoft의 상표 및 브랜드 가이드라인](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
+이 프로젝트의 수정된 버전에서 Microsoft 상표 또는 로고를 사용하여 혼동을 일으키거나 Microsoft의 후원을 암시해서는 안 됩니다.
+타사 상표 또는 로고를 사용하는 경우 해당 타사의 정책의 적용을 받습니다.

@@ -54,8 +54,6 @@ You will also need:
    github_username="<username>"
    # github_use_ssh: true will use ssh, false will use https
    github_use_ssh="false"
-   github_template_repo="<template_organization_id>/<repo-template-name>"
-   github_new_repo="<your_github_user_or_organization_id>/<new-repo-name>"
    # project_visibility: public, private, internal
    github_new_repo_visibility="public" 
 
