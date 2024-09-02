@@ -255,7 +255,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [setup-env-job, get-source-acr-and-repository]
     outputs:
-      RELEASE_VERSION: ${{ steps.get-release-version.outputs.RELEASE_VERSION }} 
+      RELEASE_VERSION: ${{ steps.get_release_version.outputs.RELEASE_VERSION }} 
     environment: dev
     env:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
