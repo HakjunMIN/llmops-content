@@ -27,7 +27,7 @@ LLMOps 솔루션 액셀러레이터에 오신 것을 환영합니다! 이 프로
 - 손쉬운 구성 및 템플릿 확장
 - Azure AI Studio 활용
 
-> ![Note]
+> [!Note]
 > AI Evaluation 리전 선택 ("eastus2", "francecentral", "uksouth", "swedencentral")
 > 해당 리전에 쿼터가 남아있는지 반드시 확인 후 리전 선택 [쿼터확인](documentation/check_your_quota.md)
 
