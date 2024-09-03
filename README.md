@@ -65,8 +65,7 @@ LLMOps 솔루션 액셀러레이터에 오신 것을 환영합니다! 이 프로
 1. [LLM Project Roles](documentation/project_roles.md): LLM 프로젝트의 다양한 역할과 그 책임에 대해 자세히 설명합니다.
 
 ## Trademarks
-이 프로젝트에는 프로젝트, 제품 또는 서비스에 대한 상표 또는 로고가 포함될 수 있습니다. Microsoft 
-상표 또는 로고의 승인된 사용은 다음 사항을 따라야 합니다. 
+이 프로젝트에는 프로젝트, 제품 또는 서비스에 대한 상표 또는 로고가 포함될 수 있습니다. Microsoft 상표 또는 로고의 승인된 사용은 다음 사항을 따라야 합니다. 
 [Microsoft의 상표 및 브랜드 가이드라인](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
 이 프로젝트의 수정된 버전에서 Microsoft 상표 또는 로고를 사용하여 혼동을 일으키거나 Microsoft의 후원을 암시해서는 안 됩니다.
 타사 상표 또는 로고를 사용하는 경우 해당 타사의 정책의 적용을 받습니다.
