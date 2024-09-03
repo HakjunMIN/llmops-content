@@ -1,8 +1,8 @@
 # Parametrizing Deployment with GitHub Environments
 
-This document describes how to parametrize deployment by setting variables in the corresponding GitHub Environment (dev, qa, or prod). The variables used in the deployment template are listed below with their descriptions.
+이 문서에서는 해당 GitHub 환경(dev, qa 또는 prod)에서 변수를 설정하여 배포를 매개변수화하는 방법을 설명합니다. 배포 템플릿에서 사용되는 변수는 아래에 설명과 함께 나열되어 있습니다.
 
-All parameters are optional except for `AZURE_ENV_NAME`, `AZURE_LOCATION`, and `AZURE_SUBSCRIPTION_ID`. If you do not want to define specific names for services, they will be generated randomly.
+모든 매개 변수는 `AZURE_ENV_NAME`, `AZURE_LOCATION` 및 `AZURE_SUBSCRIPTION_ID`를 제외한 모든 매개 변수는 선택 사항입니다. 서비스의 특정 이름을 정의하지 않으려는 경우 임의로 생성됩니다.
 
 ## Variables Table
 
@@ -29,13 +29,14 @@ All parameters are optional except for `AZURE_ENV_NAME`, `AZURE_LOCATION`, and `
 | `PROMPTFLOW_WORKER_NUM`            | The number of PromptFlow workers.                   | 1                                                  |
 | `PROMPTFLOW_SERVING_ENGINE`        | The PromptFlow serving engine.                      | fastapi                                            |
 
-## Setting Variables in GitHub Environment
+## GitHub 환경에서 변수 설정하기
 
-To set these variables in your GitHub environment:
+1. GitHub의 리포지토리로 이동합니다.
+2. 2. **Setting** > **Environment**으로 이동합니다.
+3. 3. 환경을 선택하거나 생성합니다(예: `dev`, `qa` 또는 `prod`).
+4. 4. 위 표에 나열된 변수를 해당 값과 함께 추가합니다.
 
-1. Navigate to your repository on GitHub.
-2. Go to **Settings** > **Environments**.
-3. Select or create an environment (e.g., `dev`, `qa`, or `prod`).
-4. Add the variables listed in the table above with their corresponding values.
+>[!NOTE]
+>`bootstrap.sh` 스크립트를 실행하여 위 작업을 셋업할 수 있습니다. [setup.md](./setup.md)름 참고하세요.
 
-By setting these variables in the GitHub environment, you ensure that your deployment parameters are correctly configured for each environment, facilitating a smooth and consistent deployment process.
+GitHub 환경에서 이러한 변수를 설정하면 각 환경에 맞게 배포 매개변수를 올바르게 구성하여 원활하고 일관된 배포 프로세스를 진행할 수 있습니다.
