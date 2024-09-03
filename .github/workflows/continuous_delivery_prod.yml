@@ -223,10 +223,7 @@ jobs:
             command=$1
             if [ -n "$subscription" ]; then
               command="$command --subscription $subscription"
-            fi
-            if $verbose; then
-              command="$command --debug"
-            fi
+            fi           
             echo "$command"
           }
 
