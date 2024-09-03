@@ -85,7 +85,7 @@ async def main():
 
         try:
             azure_ai_project["credential"] = ""
-            adversarial_eval_result = evaluate(
+            evaluate(
                 evaluation_name=f"{prefix} Adversarial Tests",  
                 data=adversarial_conversation_result, 
                 evaluators={
@@ -99,7 +99,7 @@ async def main():
         )
         except Exception as e:
             print(f"An error occurred during evaluation: {e}\n Retrying without reporting results in Azure AI Project.")
-            adversarial_eval_result = evaluate(
+            evaluate(
                 evaluation_name=f"{prefix} Adversarial Tests",  
                 data=adversarial_conversation_result, 
                 evaluators={
@@ -122,7 +122,7 @@ async def main():
         print(f"Adversarial conversation w/ jailbreak results: {adversarial_conversation_result_w_jailbreak}.")
 
         try:
-            adversarial_eval_w_jailbreak_result = evaluate(
+            evaluate(
                 evaluation_name=f"{prefix} Adversarial Tests w/ Jailbreak", 
                 data=adversarial_conversation_result_w_jailbreak,
                 evaluators={
@@ -136,7 +136,7 @@ async def main():
             )
         except Exception as e:
             print(f"An error occurred during evaluation: {e}\n Retrying without reporting results in Azure AI Project.")            
-            adversarial_eval_w_jailbreak_result = evaluate(
+            evaluate(
                 evaluation_name=f"{prefix} Adversarial Tests w/ Jailbreak", 
                 data=adversarial_conversation_result_w_jailbreak,
                 evaluators={

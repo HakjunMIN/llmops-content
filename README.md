@@ -1,12 +1,10 @@
-[![CD QA Pipeline](https://github.com/HakjunMIN/llmops-content/actions/workflows/continuous_delivery_qa.yml/badge.svg)](https://github.com/HakjunMIN/llmops-content/actions/workflows/continuous_delivery_qa.yml)
-
-[![CD Prod Pipeline](https://github.com/HakjunMIN/llmops-content/actions/workflows/continuous_delivery_prod.yml/badge.svg)](https://github.com/HakjunMIN/llmops-content/actions/workflows/continuous_delivery_prod.yml)
+[![CD QA Pipeline](https://github.com/HakjunMIN/llmops-content/actions/workflows/continuous_delivery_qa.yml/badge.svg)](https://github.com/HakjunMIN/llmops-content/actions/workflows/continuous_delivery_qa.yml) [![CD Prod Pipeline](https://github.com/HakjunMIN/llmops-content/actions/workflows/continuous_delivery_prod.yml/badge.svg)](https://github.com/HakjunMIN/llmops-content/actions/workflows/continuous_delivery_prod.yml)
 
 # Azure LLMOps Solution Accelerator
 
 ![Header](media/llmopsheader.png)
 
-> ![Important]
+> [!Important]
 > **특징**
 > * Forked from https://github.com/Azure/llmops
 > * Github 프로젝트 템플릿 방식에서 Fork 방식으로 단순화
@@ -29,7 +27,7 @@ LLMOps 솔루션 액셀러레이터에 오신 것을 환영합니다! 이 프로
 - 손쉬운 구성 및 템플릿 확장
 - Azure AI Studio 활용
 
-> ![Note]
+> [!Note]
 > AI Evaluation 리전 선택 ("eastus2", "francecentral", "uksouth", "swedencentral")
 > 해당 리전에 쿼터가 남아있는지 반드시 확인 후 리전 선택 [쿼터확인](documentation/check_your_quota.md)
 
@@ -51,42 +49,10 @@ LLMOps 솔루션 액셀러레이터에 오신 것을 환영합니다! 이 프로
     # 인프라 프로비전
     ./provision.sh
     ```
+## How-to
 
-### Service Principal 생성
-
-
-   ```sh
-   az ad sp create-for-rbac --name "<your-service-principal-name>" --role Owner --scopes /subscriptions/<your-subscription-id>
-
-   {
-    "clientId": "your-client-id",
-    "clientSecret": "your-client-secret",
-    "subscriptionId": "your-subscription-id",
-    "tenantId": "your-tenant-id",
-    "activeDirectoryEndpointUrl": "https://login.microsoftonline.com",
-    "resourceManagerEndpointUrl": "https://management.azure.com/",
-    "activeDirectoryGraphResourceId": "https://graph.windows.net/",
-    "sqlManagementEndpointUrl": "https://management.core.windows.net:8443/",
-    "galleryEndpointUrl": "https://gallery.azure.com/",
-    "managementEndpointUrl": "https://management.core.windows.net/"
-    }
-   
-   ```
-
-### Set GitHub Environment Variables
-
-    새로 만든 프로젝트 리포지토리로 이동하여 세 가지 환경에 대해 다음 GitHub 환경 변수가 설정되어 있는지 확인합니다. `dev`, `qa`, and `prod`.
-    
-    - **Environment Variables:**
-     - `AZURE_ENV_NAME`
-     - `AZURE_LOCATION`
-     - `AZURE_SUBSCRIPTION_ID`
-   
-    Service Principal 생성 후 출력된 credential 정보를 각 환경별 `secret`에 설정합니다.
-
-    - **Secret:**
-     - `AZURE_CREDENTIALS`
-
+1. [Setting up a new Project](documentation/setup.md)
+2. [Delivering a new Feature](documentation/delivering_new_feature.md)
 
 ## Documentation
 
@@ -97,11 +63,6 @@ LLMOps 솔루션 액셀러레이터에 오신 것을 환영합니다! 이 프로
 3. [Reference Architecture](documentation/reference_architecture.md): 이 가속기의 기반이 되는 레퍼런스 아키텍처입니다.
 1. [RAG Project Template](https://github.com/azure/llmops-project-template): 바로 사용할 수 있는 RAG 프로젝트 템플릿을 제공합니다.
 1. [LLM Project Roles](documentation/project_roles.md): LLM 프로젝트의 다양한 역할과 그 책임에 대해 자세히 설명합니다.
-
-## How-to
-
-1. [Setting up a new Project](documentation/setup.md)
-2. [Delivering a new Feature](documentation/delivering_new_feature.md)
 
 ## Trademarks
 이 프로젝트에는 프로젝트, 제품 또는 서비스에 대한 상표 또는 로고가 포함될 수 있습니다. Microsoft 

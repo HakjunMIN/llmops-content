@@ -82,7 +82,7 @@ def main():
     data = "./responses.jsonl"  # path to the data file
 
     try:
-        result = evaluate(
+        evaluate(
             evaluation_name=f"{prefix} Quality Evaluation",
             data=data,
             evaluators={
@@ -96,7 +96,7 @@ def main():
         )
     except Exception as e:
         print(f"An error occurred during evaluation: {e}\n Retrying without reporting results in Azure AI Project.")
-        result = evaluate(
+        evaluate(
             evaluation_name=f"{prefix} Quality Evaluation",
             data=data,
             evaluators={

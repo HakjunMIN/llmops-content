@@ -1,6 +1,6 @@
 # Delivering a New Feature
 
-프로젝트 부트스트랩이 완료되면 팀은 새로운 기능 개발을 시작할 수 있습니다. 이 섹션에서는 초기 개발부터 프로덕션 배포에 이르는 모든 단계를 다루는 새 기능 제공에 대한 자세한 가이드를 제공합니다. 절차를 설명하기 위해 프로젝트의 릴리스 1.0.0에 포함될 “기능 X”라는 새 기능을 개발한다고 가정합니다. 프로세스는 다음 다이어그램에 표시된 6단계로 요약할 수 있으므로 쉽게 이해하고 따라할 수 있습니다.
+프로젝트 셋업이 완료되면 팀은 새로운 기능 개발을 시작할 수 있습니다. 이 섹션에서는 초기 개발부터 프로덕션 배포에 이르는 모든 단계를 다루는 새 기능 제공에 대한 자세한 가이드를 제공합니다. 절차를 설명하기 위해 프로젝트의 릴리스 1.0.0에 포함될 “기능 X”라는 새 기능을 개발한다고 가정합니다. 프로세스는 다음 다이어그램에 표시된 6단계로 요약할 수 있으므로 쉽게 이해하고 따라할 수 있습니다.
 
 ![Git Workflow](../media/git_workflow_branching.png)
 
@@ -24,7 +24,7 @@ cd your-repository
 
 ### 1. Creating a Feature Branch
 
-The workflow starts by creating a feature branch named `feature/feature_x` from the `develop` branch. This is where the development team will work on the new feature X.
+워크플로우는 'develop' 브랜치에서 'feature/feature_x'라는 이름의 기능 브랜치를 만드는 것으로 시작됩니다. 여기서 개발팀은 새 기능 X를 작업하게 됩니다.
 
 **Switch to the `develop` branch and pull the latest changes:**
 
@@ -39,7 +39,7 @@ git pull
 git checkout -b feature/feature_x
 ```
 
-**Make non-disruptive changes to the repository. For instance, create a file `FEATUREX.md` in the project root:**
+**리포지토리를 변경합니다. 예를 들어 프로젝트 루트에 `FEATUREX.md` 파일을 만듭니다:**
 
 *Using Bash:*
 
@@ -53,7 +53,7 @@ touch FEATUREX.md
 New-Item -ItemType File -Name "FEATUREX.md"
 ```
 
-This ensures the new feature is developed in isolation, maintaining the integrity of the project's `develop` branch and promptflow.
+이렇게 하면 프로젝트의 'develop' 브랜치와 Orompt Flow 의 무결성을 유지하면서 새 기능을 독립적으로 개발할 수 있습니다.
 
 ### 2. Pull Request (PR) to `develop`
 
@@ -115,3 +115,10 @@ GitHub 웹사이트를 사용하여 풀 리퀘스트를 생성할 수도 있습�
 ### 6. Merge to `main`
 
 `main` 브랜치에 대한 풀 리퀘스트(PR)가 GitHub에서 승인되면 GitHub의 프로젝트 리포지토리의 풀 리퀘스트 탭으로 이동하여 프로덕션으로 병합하기 위해 생성한 PR을 선택한 다음 **Merge pull request**를 클릭하여 `release/1.0.0`을 `main` 브랜치로 수동으로 병합을 승인하세요. 이 작업은 코드를 **prod** 환경에 배포하는 지속적 배포(CD) 파이프라인을 트리거합니다.
+
+## 웹 앱 테스트 방법
+
+API이므로 아래와 같이 테스트할 수 있습니다.
+```bash
+curl https://<your-app>.azurewebsites.net/score --data '{"question":"What is the size of the moon?", "chat_history":[]}' -X POST -H "Content-Type: application/json"  -v
+```
