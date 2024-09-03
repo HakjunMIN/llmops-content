@@ -149,14 +149,3 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
-
-# Bicep files
-# Azure Resource Manager template deployment parameters
-*.parameters.json
-
-# Azure Resource Manager template deployment variables
-*.variables.json
-
-# Bicep build artifacts
-*.bicep
-infra/*.json

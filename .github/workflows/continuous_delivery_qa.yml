@@ -10,7 +10,7 @@ jobs:
   setup-env-job:
     if: ${{ github.repository != 'Azure/llmops-project-template' }}        
     runs-on: ubuntu-latest
-    environment: qa
+    environment: dev
     outputs:
       AZURE_APP_SERVICE_NAME: ${{ steps.config-env.outputs.AZURE_APP_SERVICE_NAME }}
       AZURE_APP_SERVICE_PLAN_NAME: ${{ steps.config-env.outputs.AZURE_APP_SERVICE_PLAN_NAME }}
@@ -72,7 +72,7 @@ jobs:
   qa-flow-evaluation:
     needs: [setup-env-job]
     runs-on: ubuntu-latest
-    environment: qa
+    environment: dev
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -130,7 +130,7 @@ jobs:
   qa-safety-evaluation:
     needs: setup-env-job    
     runs-on: ubuntu-latest
-    environment: qa
+    environment: dev
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -194,7 +194,7 @@ jobs:
   integration-testing:
     needs: [setup-env-job, qa-flow-evaluation, qa-safety-evaluation]
     runs-on: ubuntu-latest
-    environment: qa
+    environment: dev
     steps:
       - name: Integration Tests
         run: |
@@ -252,8 +252,10 @@ jobs:
 
   import-image:
     runs-on: ubuntu-latest
-    needs: [setup-env-job, get-source-acr-and-repository] 
-    environment: qa
+    needs: [setup-env-job, get-source-acr-and-repository]
+    outputs:
+      RELEASE_VERSION: ${{ steps.get_release_version.outputs.RELEASE_VERSION }} 
+    environment: dev
     env:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       SOURCE_REGISTRY: ${{ needs.get-source-acr-and-repository.outputs.SOURCE_REGISTRY }}
@@ -286,6 +288,7 @@ jobs:
         run: |
           RELEASE_VERSION=${GITHUB_REF#refs/heads/release/}
           echo "RELEASE_VERSION=$RELEASE_VERSION-rc" >> $GITHUB_ENV
+          echo "RELEASE_VERSION=$RELEASE_VERSION-rc" >> $GITHUB_OUTPUT
           echo "RELEASE_VERSION is $RELEASE_VERSION-rc"
 
       ## Happy path: Import image from dev registry
@@ -356,7 +359,7 @@ jobs:
   deploy-flow:
     runs-on: ubuntu-latest
     needs: [setup-env-job, import-image] 
-    environment: qa
+    environment: dev
     env:
       AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
@@ -387,6 +390,7 @@ jobs:
           AZURE_CONTAINER_REPOSITORY_NAME: ${{needs.setup-env-job.outputs.AZURE_CONTAINER_REPOSITORY_NAME}}
           AZURE_RESOURCE_GROUP: ${{needs.setup-env-job.outputs.AZURE_RESOURCE_GROUP}}
           AZURE_SUBSCRIPTION_ID: ${{needs.setup-env-job.outputs.AZURE_SUBSCRIPTION_ID}}
+          RELEASE_VERSION: ${{ needs.import-image.outputs.RELEASE_VERSION }}
         shell: bash             
         run: | 
           # Deploy Flow
@@ -413,9 +417,6 @@ jobs:
             command=$1
             if [ -n "$subscription" ]; then
               command="$command --subscription $subscription"
-            fi
-            if $verbose; then
-              command="$command --debug"
             fi
             echo "$command"
           }

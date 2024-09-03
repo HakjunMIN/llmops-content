@@ -1,0 +1,218 @@
+name: Config Environment
+description: >
+  This action will provision an Azure environment and read its variables (deployment outputs).
+  Provision will be done in case there is no previous deployment or the resource group doesn't exist.
+  If there's already a deployment, it will update the provisioned resources in case the template has changed.
+  If you don't want to do the provisioning at all, just get env variables by setting MANUAL_PROVISIONING input to true.
+inputs:
+  AZURE_CREDENTIALS:
+    description: 'Azure credentials'
+    required: true
+  AZURE_ENV_NAME:
+    description: 'Azure environment name'
+    required: true
+  AZURE_SUBSCRIPTION_ID:
+    description: 'Azure subscription ID'
+    required: true
+  AZURE_LOCATION:
+    description: 'Azure location'
+    required: true
+  MANUAL_PROVISIONING:
+    description: 'Will not provision the environment if value is true, default is false'
+    required: true
+  AZURE_DEPLOY_APP_SERVICE:
+    description: 'Will not provision app plan and services if value is false, default is true'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4  
+    - name: Check GitHub env variables
+      shell: bash
+      run: |
+        if [ -z "${{ inputs.AZURE_ENV_NAME }}" ] || [ -z "${{ inputs.AZURE_CREDENTIALS }}" ]; then 
+            echo "Make sure AZURE_ENV_NAME, AZURE_SUBSCRIPTION_ID, AZURE_LOCATION and AZURE_CREDENTIALS are set."
+            exit 1
+        else
+            echo "AZURE_ENV_NAME is set to ${{ inputs.AZURE_ENV_NAME }}"
+            export AZURE_DEV_COLLECT_TELEMETRY=no            
+        fi      
+
+    - name: Install Azure Developer CLI 
+      uses: Azure/setup-azd@v1.0.0
+
+    - name: Login to Azure CLI
+      uses: azure/login@v2
+      with:
+        creds: ${{ inputs.AZURE_CREDENTIALS }}
+
+    - name: Login to Azure Developer CLI 
+      shell: bash
+      run: |
+        echo "Logging to Azure Developer CLI..."
+        AZURE_CREDENTIALS=$(echo '${{ inputs.AZURE_CREDENTIALS }}' | jq -r .)
+        CLIENT_ID=$(echo $AZURE_CREDENTIALS | jq -r .clientId)
+        CLIENT_SECRET=$(echo $AZURE_CREDENTIALS | jq -r .clientSecret)
+        TENANT_ID=$(echo $AZURE_CREDENTIALS | jq -r .tenantId)
+        azd auth login --client-id $CLIENT_ID --client-secret $CLIENT_SECRET --tenant-id $TENANT_ID
+
+    - name: Setup Python 
+      uses: actions/setup-python@v5
+      with:
+          python-version: 3.8
+
+    - name: get environment
+      shell: bash
+      id: setup-env-step
+      run: |
+        VARIABLES=(
+          "AZUREAI_HUB_NAME" 
+          "AZUREAI_PROJECT_NAME" 
+          "AZURE_APP_INSIGHTS_NAME" 
+          "AZURE_APP_SERVICE_NAME"
+          "AZURE_SUBSCRIPTION_ID" 
+          "AZURE_LOCATION" 
+          "AZUREAI_RESOURCE_GROUP"
+          "AZURE_APP_SERVICE_PLAN_NAME" 
+          "AZURE_CONTAINER_REGISTRY_NAME" 
+          "AZURE_CONTAINER_REPOSITORY_NAME"
+          "AZURE_KEY_VAULT_NAME" 
+          "AZURE_LOG_ANALYTICS_NAME" 
+          "AZURE_OPENAI_API_VERSION"
+          "AZURE_OPENAI_CHAT_DEPLOYMENT" 
+          "AZURE_OPENAI_EMBEDDING_DEPLOYMENT" 
+          "AZURE_OPENAI_EMBEDDING_MODEL"
+          "AZURE_OPENAI_ENDPOINT" 
+          "AZURE_OPENAI_NAME" 
+          "AZURE_PRINCIPAL_ID" 
+          "AZURE_RESOURCE_GROUP"
+          "AZURE_SEARCH_ENDPOINT" 
+          "LOAD_AZURE_SEARCH_SAMPLE_DATA"
+          "AZURE_SEARCH_NAME" 
+          "AZURE_STORAGE_ACCOUNT_NAME" 
+          "PROMPTFLOW_SERVING_ENGINE" 
+          "PROMPTFLOW_WORKER_NUM"
+        )
+
+        # Run azd env refresh and capture outputs
+        export AZURE_SUBSCRIPTION_ID="${{ inputs.AZURE_SUBSCRIPTION_ID }}"
+        export AZURE_LOCATION="${{ inputs.AZURE_LOCATION }}"
+
+        set +e
+        output=$(azd env refresh -e "${{ inputs.AZURE_ENV_NAME }}" --no-prompt 2>&1)
+        exit_code=$?
+        set -e
+       
+        # Set environment variables by getting them from the GitHub environment or the last deployment. 
+        # GitHub environment variables take precedence over those from the last deployment.
+        # Here's how it works for each variable:
+        # - The variable takes the value from the GitHub Environment if available; otherwise, it uses the latest deployment value.
+        # - If the new value differs from the latest deployment, the AZD variable is updated.
+        # - Finally, it adds the variable to the GitHub output for use by the calling job.
+
+        echo "${{ inputs.AZURE_ENV_NAME }} environment variables values." 
+        
+        # Set environment variables and update AZD variables 
+        
+        for VAR in "${VARIABLES[@]}"; do
+          VALUE_OUTPUT=$(azd env get-values -e ${{ inputs.AZURE_ENV_NAME }} | grep $VAR | cut -d'=' -f2 | tr -d '"' || true)
+          VALUE_GHAENV=$(eval echo \${$VAR})
+          [ -n "$VALUE_GHAENV" ] && VALUE=$VALUE_GHAENV || VALUE=$VALUE_OUTPUT
+          [ -n "$VALUE" ] && [ "$VALUE" != "$VALUE_OUTPUT" ] && azd env set $VAR $VALUE
+          echo "$VAR=$VALUE" >> "$GITHUB_OUTPUT"
+          echo "$VAR=$VALUE"
+          export $VAR=$VALUE            
+        done
+
+        # Define azd deployAppService parameter
+        export AZURE_DEPLOY_APP_SERVICE=${{ inputs.AZURE_DEPLOY_APP_SERVICE }}
+        [ -n "$AZURE_DEPLOY_APP_SERVICE" ] && echo 'AZURE_DEPLOY_APP_SERVICE is ${AZURE_DEPLOY_APP_SERVICE}' || echo 'AZURE_DEPLOY_APP_SERVICE is empty defaulting to true'
+        [ -n "$AZURE_DEPLOY_APP_SERVICE" ] && azd env set AZURE_DEPLOY_APP_SERVICE ${AZURE_DEPLOY_APP_SERVICE} || azd env set AZURE_DEPLOY_APP_SERVICE true
+
+        # Load sample data if needed
+
+        indexSampleData=$([ -z "$LOAD_AZURE_SEARCH_SAMPLE_DATA" ] || [ "$LOAD_AZURE_SEARCH_SAMPLE_DATA" == "true" ] && echo true || echo false)
+        if [ $indexSampleData = "true" ]; then
+          echo "🔶 | Running post-provisioning script to populate sample data." 
+          ./infra/hooks/postprovision.sh 
+        fi
+
+outputs:
+  AZUREAI_HUB_NAME:
+    description: 'Azure AI Hub Name'
+    value: ${{ steps.setup-env-step.outputs.AZUREAI_HUB_NAME }}
+  AZUREAI_PROJECT_NAME:
+    description: 'Azure AI Project Name'
+    value: ${{ steps.setup-env-step.outputs.AZUREAI_PROJECT_NAME }}
+  AZUREAI_RESOURCE_GROUP:
+    description: 'Azure AI Resource Group Name'
+    value: ${{ steps.setup-env-step.outputs.AZURE_RESOURCE_GROUP }}
+  AZURE_APP_INSIGHTS_NAME:
+    description: 'Azure App Insights Name'
+    value: ${{ steps.setup-env-step.outputs.AZURE_APP_INSIGHTS_NAME }}
+  AZURE_APP_SERVICE_NAME:
+    description: 'Azure App Service Name'
+    value: ${{ steps.setup-env-step.outputs.AZURE_APP_SERVICE_NAME }}
+  AZURE_APP_SERVICE_PLAN_NAME:
+    description: 'Azure App Service Plan Name'
+    value: ${{ steps.setup-env-step.outputs.AZURE_APP_SERVICE_PLAN_NAME }}
+  AZURE_CONTAINER_REGISTRY_NAME:
+    description: 'Azure Container Registry Name'
+    value: ${{ steps.setup-env-step.outputs.AZURE_CONTAINER_REGISTRY_NAME }}
+  AZURE_CONTAINER_REPOSITORY_NAME:
+    description: 'Azure Container Registry Repository Name'
+    value: ${{ steps.setup-env-step.outputs.AZURE_CONTAINER_REPOSITORY_NAME }}
+  AZURE_KEY_VAULT_NAME:
+    description: 'Azure Key Vault Name'
+    value: ${{ steps.setup-env-step.outputs.AZURE_KEY_VAULT_NAME }}
+  AZURE_LOCATION:
+    description: 'Azure location'
+    value: ${{ steps.setup-env-step.outputs.AZURE_LOCATION }}
+  AZURE_LOG_ANALYTICS_NAME:
+    description: 'Azure Log Analytics Name'
+    value: ${{ steps.setup-env-step.outputs.AZURE_LOG_ANALYTICS_NAME }}
+  AZURE_OPENAI_API_VERSION:
+    description: 'Azure OpenAI API Version'
+    value: ${{ steps.setup-env-step.outputs.AZURE_OPENAI_API_VERSION }}
+  AZURE_OPENAI_CHAT_DEPLOYMENT:
+    description: 'Azure OpenAI Chat Deployment'
+    value: ${{ steps.setup-env-step.outputs.AZURE_OPENAI_CHAT_DEPLOYMENT }}
+  AZURE_OPENAI_EMBEDDING_DEPLOYMENT:
+    description: 'Azure OpenAI Embedding Deployment'
+    value: ${{ steps.setup-env-step.outputs.AZURE_OPENAI_EMBEDDING_DEPLOYMENT }}
+  AZURE_OPENAI_EMBEDDING_MODEL:
+    description: 'Azure OpenAI Embedding Model'
+    value: ${{ steps.setup-env-step.outputs.AZURE_OPENAI_EMBEDDING_MODEL }}
+  AZURE_OPENAI_ENDPOINT:
+    description: 'Azure OpenAI Endpoint'
+    value: ${{ steps.setup-env-step.outputs.AZURE_OPENAI_ENDPOINT }}
+  AZURE_OPENAI_NAME:
+    description: 'Azure OpenAI Name'
+    value: ${{ steps.setup-env-step.outputs.AZURE_OPENAI_NAME }}
+  AZURE_PRINCIPAL_ID:
+    description: 'Azure Principal ID'
+    value: ${{ steps.setup-env-step.outputs.AZURE_PRINCIPAL_ID }}
+  AZURE_RESOURCE_GROUP:
+    description: 'Azure resource group'
+    value: ${{ steps.setup-env-step.outputs.AZURE_RESOURCE_GROUP }}
+  AZURE_SEARCH_ENDPOINT:
+    description: 'Azure Search Endpoint'
+    value: ${{ steps.setup-env-step.outputs.AZURE_SEARCH_ENDPOINT }}
+  LOAD_AZURE_SEARCH_SAMPLE_DATA:
+    description: 'Azure Search Index Sample Data'
+    value: ${{ steps.setup-env-step.outputs.LOAD_AZURE_SEARCH_SAMPLE_DATA }}
+  AZURE_SEARCH_NAME:
+    description: 'Azure Search Name'
+    value: ${{ steps.setup-env-step.outputs.AZURE_SEARCH_NAME }}
+  AZURE_STORAGE_ACCOUNT_NAME:
+    description: 'Azure Storage Account Name'
+    value: ${{ steps.setup-env-step.outputs.AZURE_STORAGE_ACCOUNT_NAME }}
+  AZURE_SUBSCRIPTION_ID:
+    description: 'Azure subscription ID'
+    value: ${{ steps.setup-env-step.outputs.AZURE_SUBSCRIPTION_ID }}
+  PROMPTFLOW_SERVING_ENGINE:
+    description: 'Promptflow Serving Engine'
+    value: ${{ steps.setup-env-step.outputs.PROMPTFLOW_SERVING_ENGINE }}
+  PROMPTFLOW_WORKER_NUM:
+    description: 'Promptflow Worker Number'
+    value: ${{ steps.setup-env-step.outputs.PROMPTFLOW_WORKER_NUM }}

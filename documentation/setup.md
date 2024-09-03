@@ -54,6 +54,8 @@ You will also need:
    github_username="<username>"
    # github_use_ssh: true will use ssh, false will use https
    github_use_ssh="false"
+   github_template_repo="<template_organization_id>/<repo-template-name>"
+   github_new_repo="<your_github_user_or_organization_id>/<new-repo-name>"
    # project_visibility: public, private, internal
    github_new_repo_visibility="public" 
 
@@ -84,10 +86,11 @@ You will also need:
 5. **Service Principal생성**
 
    ```sh
-   az ad sp create-for-rbac --name "<your-service-principal-name>" --role Owner --scopes /subscriptions/<your-subscription-id> --sdk-auth
+   az ad sp create-for-rbac --name "<your-service-principal-name>" --role Owner --scopes /subscriptions/<your-subscription-id> 
    ```
 
-   > 여기에서 생성한 출력 정보가 나중에 사용할 수 있도록 제대로 저장되었는지 확인합니다.
+   >[!Important]
+   > 여기에서 생성한 출력 정보가 나중에 사용할 수 있도록 메모합니다.
 
 6. Github 설정
 
@@ -101,7 +104,31 @@ You will also need:
    ./provision.sh
    ```
 
-8. **Set GitHub Environment Variables**
+8. Service Principal 권한할당
+
+   ```bash
+8. **Service Principal 권한할당**
+
+   ```bash
+   CLIENT_ID="<your-client-id>"
+   
+   eval $(azd env get-values)
+
+   # Assign "Search Index Data Contributor" role to the service principal for Azure Search
+   az role assignment create --assignee $CLIENT_ID --role "8ebe5a00-799e-43f5-93ac-243d3dce84a7" --scope /subscriptions/$AZURE_SUBSCRIPTION_ID/resourceGroups/$AZUREAI_RESOURCE_GROUP/providers/Microsoft.Search/searchServices/$AZURE_SEARCH_NAME
+
+   # Assign "Azure AI Developer" role to the service principal for Azure AI project
+   az role assignment create --assignee $CLIENT_ID --role "64702f94-c441-49e6-a78b-ef80e0188fee" --scope /subscriptions/$AZURE_SUBSCRIPTION_ID/resourceGroups/$AZUREAI_RESOURCE_GROUP/providers/Microsoft.MachineLearningServices/workspaces/$AZUREAI_PROJECT_NAME
+   
+   # Assign "AcrPull" role to the service principal for Azure Container Registry
+   az role assignment create --assignee $CLIENT_ID --role "7f951dda-4ed3-4680-a7ca-43fe172d538d" --scope /subscriptions/$AZURE_SUBSCRIPTION_ID/resourceGroups/$AZUREAI_RESOURCE_GROUP/providers/Microsoft.ContainerRegistry/registries/$AZURE_CONTAINER_REGISTRY_NAME
+
+   # Assign "AcrPush" role to the service principal for Azure Container Registry
+   az role assignment create --assignee $CLIENT_ID --role "8311e382-0749-4cb8-b61a-304f252e45ec" --scope /subscriptions/$AZURE_SUBSCRIPTION_ID/resourceGroups/$AZUREAI_RESOURCE_GROUP/providers/Microsoft.ContainerRegistry/registries/$AZURE_CONTAINER_REGISTRY_NAME
+
+   ```
+
+9. **Set GitHub Environment Variables**
 
    리파지토리에서 아래 Variable 생성 확인 (`dev`, `qa`, and `prod` 별로 각각)
 

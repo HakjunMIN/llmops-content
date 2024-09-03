@@ -46,25 +46,26 @@ jobs:
         run: |
           echo "Run Bandit"
 
-  config-env-job:
+  
+  get-env-job:
     if: ${{ github.repository != 'Azure/llmops-project-template' }}
     runs-on: ubuntu-latest
     environment: dev
-    needs: [unit-testing, static-code-analysis]
+    # needs: [unit-testing, static-code-analysis]
     outputs:
-      AZURE_RESOURCE_GROUP: ${{ steps.config-env.outputs.AZURE_RESOURCE_GROUP }}
-      AZURE_OPENAI_NAME: ${{ steps.config-env.outputs.AZURE_OPENAI_NAME }}
-      AZURE_OPENAI_ENDPOINT: ${{ steps.config-env.outputs.AZURE_OPENAI_ENDPOINT }}    
-      AZURE_SEARCH_ENDPOINT: ${{ steps.config-env.outputs.AZURE_SEARCH_ENDPOINT }}
-      AZURE_OPENAI_EMBEDDING_DEPLOYMENT: ${{ steps.config-env.outputs.AZURE_OPENAI_EMBEDDING_DEPLOYMENT }}
-      AZURE_OPENAI_CHAT_DEPLOYMENT: ${{ steps.config-env.outputs.AZURE_OPENAI_CHAT_DEPLOYMENT }}
-      AZURE_OPENAI_EMBEDDING_MODEL: ${{ steps.config-env.outputs.AZURE_OPENAI_EMBEDDING_MODEL }}
-      AZURE_OPENAI_API_VERSION: ${{ steps.config-env.outputs.AZURE_OPENAI_API_VERSION }}
+      AZURE_RESOURCE_GROUP: ${{ steps.get-env.outputs.AZURE_RESOURCE_GROUP }}
+      AZURE_OPENAI_NAME: ${{ steps.get-env.outputs.AZURE_OPENAI_NAME }}
+      AZURE_OPENAI_ENDPOINT: ${{ steps.get-env.outputs.AZURE_OPENAI_ENDPOINT }}    
+      AZURE_SEARCH_ENDPOINT: ${{ steps.get-env.outputs.AZURE_SEARCH_ENDPOINT }}
+      AZURE_OPENAI_EMBEDDING_DEPLOYMENT: ${{ steps.get-env.outputs.AZURE_OPENAI_EMBEDDING_DEPLOYMENT }}
+      AZURE_OPENAI_CHAT_DEPLOYMENT: ${{ steps.get-env.outputs.AZURE_OPENAI_CHAT_DEPLOYMENT }}
+      AZURE_OPENAI_EMBEDDING_MODEL: ${{ steps.get-env.outputs.AZURE_OPENAI_EMBEDDING_MODEL }}
+      AZURE_OPENAI_API_VERSION: ${{ steps.get-env.outputs.AZURE_OPENAI_API_VERSION }}
     steps: 
       - uses: actions/checkout@v4
       - name: Get environment variables
-        uses: ./.github/actions/config-env
-        id: config-env
+        uses: ./.github/actions/get-env
+        id: get-env
         with:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
           AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
@@ -99,7 +100,7 @@ jobs:
           AZURE_STORAGE_ACCOUNT_NAME: ${{ vars.AZURE_STORAGE_ACCOUNT_NAME }}
 
   evaluate-flow:
-    needs: [config-env-job]
+    needs: [get-env-job]
     runs-on: ubuntu-latest
     environment: dev
     steps:
@@ -123,14 +124,14 @@ jobs:
 
       - name: AI-Based prompt evaluation
         env: 
-          AZURE_RESOURCE_GROUP: ${{needs.config-env-job.outputs.AZURE_RESOURCE_GROUP}}
-          AZURE_OPENAI_NAME: ${{needs.config-env-job.outputs.AZURE_OPENAI_NAME}}
-          AZURE_OPENAI_ENDPOINT: ${{needs.config-env-job.outputs.AZURE_OPENAI_ENDPOINT}}
-          AZURE_SEARCH_ENDPOINT: ${{needs.config-env-job.outputs.AZURE_SEARCH_ENDPOINT}}
-          AZURE_OPENAI_EMBEDDING_DEPLOYMENT: ${{needs.config-env-job.outputs.AZURE_OPENAI_EMBEDDING_DEPLOYMENT}}
-          AZURE_OPENAI_CHAT_DEPLOYMENT: ${{needs.config-env-job.outputs.AZURE_OPENAI_CHAT_DEPLOYMENT}}
-          AZURE_OPENAI_EMBEDDING_MODEL: ${{needs.config-env-job.outputs.AZURE_OPENAI_EMBEDDING_MODEL}}
-          AZURE_OPENAI_API_VERSION: ${{needs.config-env-job.outputs.AZURE_OPENAI_API_VERSION}}    
+          AZURE_RESOURCE_GROUP: ${{needs.get-env-job.outputs.AZURE_RESOURCE_GROUP}}
+          AZURE_OPENAI_NAME: ${{needs.get-env-job.outputs.AZURE_OPENAI_NAME}}
+          AZURE_OPENAI_ENDPOINT: ${{needs.get-env-job.outputs.AZURE_OPENAI_ENDPOINT}}
+          AZURE_SEARCH_ENDPOINT: ${{needs.get-env-job.outputs.AZURE_SEARCH_ENDPOINT}}
+          AZURE_OPENAI_EMBEDDING_DEPLOYMENT: ${{needs.get-env-job.outputs.AZURE_OPENAI_EMBEDDING_DEPLOYMENT}}
+          AZURE_OPENAI_CHAT_DEPLOYMENT: ${{needs.get-env-job.outputs.AZURE_OPENAI_CHAT_DEPLOYMENT}}
+          AZURE_OPENAI_EMBEDDING_MODEL: ${{needs.get-env-job.outputs.AZURE_OPENAI_EMBEDDING_MODEL}}
+          AZURE_OPENAI_API_VERSION: ${{needs.get-env-job.outputs.AZURE_OPENAI_API_VERSION}}    
         run: |
           echo "Run AI-Based prompt evaluation"
           export AZURE_OPENAI_API_KEY=$(az cognitiveservices account keys list --resource-group ${AZURE_RESOURCE_GROUP} --name ${AZURE_OPENAI_NAME} --query "key1" --output tsv)

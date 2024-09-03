@@ -18,6 +18,12 @@ else
     exit 1
 fi
 
+remote_url=$(git remote get-url origin)
+organization=$(echo "$remote_url" | awk -F'[:/]' '{print $(NF-1)}')
+repo_name=$(basename -s .git "$remote_url")
+
+github_new_repo=${organization}/${repo_name}
+
 if [ "$github_use_ssh" = "true" ]; then
     github_new_repo_uri="git@github.com:${github_new_repo}.git"
 else
