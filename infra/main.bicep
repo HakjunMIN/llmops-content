@@ -38,7 +38,7 @@ var _deployAppService = deployAppService
 
 // Azure OpenAI parameters
 
-param oaiApiVersion string = '2024-05-13'
+param oaiApiVersion string = '2023-05-15'
 param oaiChatDeployment string = 'gpt-4'
 param oaiEmbeddingDeployment string = 'text-embedding-ada-002'
 param oaiEmbeddingModel string = 'text-embedding-ada-002'
