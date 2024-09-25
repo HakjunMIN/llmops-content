@@ -38,7 +38,8 @@ var _deployAppService = deployAppService
 
 // Azure OpenAI parameters
 
-param oaiApiVersion string = '2023-05-15'
+param oaiApiVersion string = '2023-03-15-preview'
+param oaiEmbeddingApiVersion string = '2023-05-15'
 param oaiChatDeployment string = 'gpt-4'
 param oaiEmbeddingDeployment string = 'text-embedding-ada-002'
 param oaiEmbeddingModel string = 'text-embedding-ada-002'
@@ -137,6 +138,7 @@ module appService  'core/host/appservice.bicep'  = if (_deployAppService) {
       AZURE_OPENAI_EMBEDDING_DEPLOYMENT: oaiEmbeddingDeployment
       AZURE_OPENAI_EMBEDDING_MODEL: oaiEmbeddingModel
       AZURE_OPENAI_API_VERSION: oaiApiVersion
+      AZURE_OPENAI_EMBEDDING_API_VERSION: oaiEmbeddingApiVersion
       AZURE_SEARCH_ENDPOINT: _deployAppService?ai.outputs.searchEndpoint:''
       acrUseManagedIdentityCreds: true
     }
