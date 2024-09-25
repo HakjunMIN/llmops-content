@@ -196,7 +196,8 @@ jobs:
             path: adversarial_test_w_jailbreak.json
  
   integration-testing:
-    needs: [setup-env-job, qa-flow-evaluation, qa-safety-evaluation]
+    # needs: [setup-env-job, qa-flow-evaluation, qa-safety-evaluation]
+    needs: [setup-env-job, qa-safety-evaluation]
     runs-on: ubuntu-latest
     environment: dev
     steps:
