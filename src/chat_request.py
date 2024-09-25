@@ -27,7 +27,7 @@ def get_embedding(question: str):
         model=os.getenv("AZURE_OPENAI_EMBEDDING_MODEL", ""),
     )
     embedding = embedding_response.data[0].embedding
-    print("embedding:", embedding)
+   
     return embedding
 
 @tool
