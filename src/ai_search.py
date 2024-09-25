@@ -46,6 +46,4 @@ def retrieve_documentation(
         for doc in results
     ]
 
-    print("search_docs:" + docs)
-
     return docs

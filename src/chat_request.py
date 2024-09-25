@@ -34,14 +34,8 @@ def get_embedding(question: str):
 def get_response(question, chat_history):
     print("inputs:", question)
     embedding = get_embedding(question)
-    
-    if embedding is None:
-        raise ValueError("Embedding is None")
-    
     context = get_context(question, embedding)
-    if context is None:
-        raise ValueError("Context is None")
-    
+
     print("context:", context)
     print("getting result...")
 
