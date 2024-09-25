@@ -180,6 +180,9 @@ outputs:
   AZURE_OPENAI_EMBEDDING_DEPLOYMENT:
     description: 'Azure OpenAI Embedding Deployment'
     value: ${{ steps.setup-env-step.outputs.AZURE_OPENAI_EMBEDDING_DEPLOYMENT }}
+  AZURE_OPENAI_EMBEDDING_API_VERSION:
+    description: 'Azure OpenAI Embedding API Version'
+    value: ${{ steps.setup-env-step.outputs.AZURE_OPENAI_EMBEDDING_API_VERSION }}  
   AZURE_OPENAI_EMBEDDING_MODEL:
     description: 'Azure OpenAI Embedding Model'
     value: ${{ steps.setup-env-step.outputs.AZURE_OPENAI_EMBEDDING_MODEL }}
