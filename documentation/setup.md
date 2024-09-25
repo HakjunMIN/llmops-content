@@ -117,6 +117,11 @@ You will also need:
 
    # Assign "Azure AI Developer" role to the service principal for Azure AI project
    az role assignment create --assignee $CLIENT_ID --role "64702f94-c441-49e6-a78b-ef80e0188fee" --scope /subscriptions/$AZURE_SUBSCRIPTION_ID/resourceGroups/$AZUREAI_RESOURCE_GROUP/providers/Microsoft.MachineLearningServices/workspaces/$AZUREAI_PROJECT_NAME
+
+   # Assign "Azure AI Developer" role to the service principal for Azure AI Service
+   az role assignment create --assignee $CLIENT_ID --role "64702f94-c441-49e6-a78b-ef80e0188fee" --scope /subscriptions/$AZURE_SUBSCRIPTION_ID/resourceGroups/$AZUREAI_RESOURCE_GROUP/providers/Microsoft.CognitiveServices/accounts/$AZURE_OPENAI_NAME
+
+
    
    # Assign "AcrPull" role to the service principal for Azure Container Registry
    az role assignment create --assignee $CLIENT_ID --role "7f951dda-4ed3-4680-a7ca-43fe172d538d" --scope /subscriptions/$AZURE_SUBSCRIPTION_ID/resourceGroups/$AZUREAI_RESOURCE_GROUP/providers/Microsoft.ContainerRegistry/registries/$AZURE_CONTAINER_REGISTRY_NAME
