@@ -25,7 +25,7 @@ jobs:
     steps: 
       - uses: actions/checkout@v4   
       - name: Provision prod environment
-        uses: ./.github/actions/config-env
+        uses: ./.github/actions/get-env
         id: config-env
         with:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
