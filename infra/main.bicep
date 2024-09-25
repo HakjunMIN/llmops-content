@@ -287,6 +287,7 @@ output AZURE_OPENAI_ENDPOINT string = ai.outputs.openAiEndpoint
 output AZURE_OPENAI_API_VERSION string = oaiApiVersion
 output AZURE_OPENAI_CHAT_DEPLOYMENT string =  oaiChatDeployment
 output AZURE_OPENAI_EMBEDDING_DEPLOYMENT string =  oaiEmbeddingDeployment
+output AZURE_OPENAI_EMBEDDING_API_VERSION string = oaiEmbeddingApiVersion
 output AZURE_OPENAI_EMBEDDING_MODEL string =  oaiEmbeddingModel
 
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = ai.outputs.containerRegistryEndpoint
