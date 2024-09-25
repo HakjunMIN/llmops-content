@@ -84,7 +84,7 @@ async def main():
         print(f"Adversarial conversation results: {adversarial_conversation_result}.")
 
         try:
-            azure_ai_project["credential"] = ""
+            azure_ai_project["credential"] = DefaultAzureCredential()
             evaluate(
                 evaluation_name=f"{prefix} Adversarial Tests",  
                 data=adversarial_conversation_result, 

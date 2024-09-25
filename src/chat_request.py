@@ -15,28 +15,34 @@ def get_context(question, embedding):
 def get_embedding(question: str):
     connection = AzureOpenAIConnection(        
                     azure_deployment=os.getenv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT", ""),
-                    api_version=os.getenv("AZURE_OPENAI_API_VERSION", ""),
+                    api_version=os.getenv("AZURE_OPENAI_EMBEDDING_API_VERSION", "2023-05-15"),
+                    api_key=os.getenv("AZURE_OPENAI_API_KEY", ""),
                     api_base=os.getenv("AZURE_OPENAI_ENDPOINT", "")
                     )
                 
     client = init_azure_openai_client(connection)
 
-    return client.embeddings.create(
-            input=question,
-            model=os.getenv("AZURE_OPENAI_EMBEDDING_MODEL", ""),
-        ).data[0].embedding
+    embedding_response = client.embeddings.create(
+        input=question,
+        model=os.getenv("AZURE_OPENAI_EMBEDDING_MODEL", ""),
+    )
+    embedding = embedding_response.data[0].embedding
+   
+    return embedding
 
 @tool
 def get_response(question, chat_history):
     print("inputs:", question)
     embedding = get_embedding(question)
     context = get_context(question, embedding)
+
     print("context:", context)
     print("getting result...")
 
     configuration = AzureOpenAIModelConfiguration(
         azure_deployment=os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT", ""),
         api_version=os.getenv("AZURE_OPENAI_API_VERSION", ""),
+        api_key=os.getenv("AZURE_OPENAI_API_KEY", ""),
         azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT", "")
     )
     override_model = {

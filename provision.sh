@@ -23,6 +23,7 @@ if [ "$azd_dev_env_provision" = "true" ]; then
     # 03. Initializing AZD dev environment
     echo -e "${YELLOW}03. Initializing AZD dev environment.${NC}"
 
+    rm -rf .azure    
     # Initialize the azd environment
     echo -e "${YELLOW}Running azd init.${NC}"
     azd init -e "$azd_dev_env_name" -s "$azd_dev_env_subscription" -l "$azd_dev_env_location"

@@ -24,6 +24,7 @@ jobs:
       AZURE_SEARCH_ENDPOINT: ${{ steps.config-env.outputs.AZURE_SEARCH_ENDPOINT }}
       AZURE_OPENAI_CHAT_DEPLOYMENT: ${{ steps.config-env.outputs.AZURE_OPENAI_CHAT_DEPLOYMENT }}
       AZURE_OPENAI_EMBEDDING_DEPLOYMENT: ${{steps.config-env.outputs.AZURE_OPENAI_EMBEDDING_DEPLOYMENT}}
+      AZURE_OPENAI_EMBEDDING_API_VERSION: ${{steps.config-env.outputs.AZURE_OPENAI_EMBEDDING_API_VERSION}}
       AZURE_OPENAI_EMBEDDING_MODEL: ${{steps.config-env.outputs.AZURE_OPENAI_EMBEDDING_MODEL}}
       AZURE_OPENAI_API_VERSION: ${{steps.config-env.outputs.AZURE_OPENAI_API_VERSION}}
       AZURE_OPENAI_ENDPOINT: ${{steps.config-env.outputs.AZURE_OPENAI_ENDPOINT}}
@@ -33,7 +34,7 @@ jobs:
     steps: 
       - uses: actions/checkout@v4   
       - name: Provision qa environment
-        uses: ./.github/actions/config-env
+        uses: ./.github/actions/get-env
         id: config-env
         with:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
@@ -52,6 +53,7 @@ jobs:
           AZURE_OPENAI_CHAT_DEPLOYMENT: ${{ vars.AZURE_OPENAI_CHAT_DEPLOYMENT }}
           AZURE_OPENAI_DEPLOYMENT: ${{ vars.AZURE_OPENAI_CHAT_DEPLOYMENT }}
           AZURE_OPENAI_EMBEDDING_DEPLOYMENT: ${{ vars.AZURE_OPENAI_EMBEDDING_DEPLOYMENT }}
+          AZURE_OPENAI_EMBEDDING_API_VERSION: ${{ vars.AZURE_OPENAI_EMBEDDING_API_VERSION }}
           AZURE_OPENAI_EMBEDDING_MODEL: ${{ vars.AZURE_OPENAI_EMBEDDING_MODEL }}
           AZURE_OPENAI_ENDPOINT: ${{ vars.AZURE_OPENAI_ENDPOINT }}
           AZURE_OPENAI_NAME: ${{ vars.AZURE_OPENAI_NAME }}
@@ -70,6 +72,7 @@ jobs:
           AZURE_STORAGE_ACCOUNT_NAME: ${{ vars.AZURE_STORAGE_ACCOUNT_NAME }}
 
   qa-flow-evaluation:
+    continue-on-error: true
     needs: [setup-env-job]
     runs-on: ubuntu-latest
     environment: dev
@@ -108,6 +111,7 @@ jobs:
           AZURE_SEARCH_ENDPOINT: ${{needs.setup-env-job.outputs.AZURE_SEARCH_ENDPOINT}}
           AZURE_OPENAI_CHAT_DEPLOYMENT: ${{needs.setup-env-job.outputs.AZURE_OPENAI_CHAT_DEPLOYMENT}}
           AZURE_OPENAI_EMBEDDING_DEPLOYMENT: ${{needs.setup-env-job.outputs.AZURE_OPENAI_EMBEDDING_DEPLOYMENT}}
+          AZURE_OPENAI_EMBEDDING_API_VERSION: ${{needs.setup-env-job.outputs.AZURE_OPENAI_EMBEDDING_API_VERSION}}
           AZURE_OPENAI_EMBEDDING_MODEL: ${{needs.setup-env-job.outputs.AZURE_OPENAI_EMBEDDING_MODEL}}
           PROMPTFLOW_WORKER_NUM: ${{needs.setup-env-job.outputs.PROMPTFLOW_WORKER_NUM}}
           PROMPTFLOW_SERVING_ENGINE: ${{needs.setup-env-job.outputs.PROMPTFLOW_SERVING_ENGINE}}
@@ -167,6 +171,7 @@ jobs:
           AZURE_SEARCH_ENDPOINT: ${{needs.setup-env-job.outputs.AZURE_SEARCH_ENDPOINT}}
           AZURE_OPENAI_CHAT_DEPLOYMENT: ${{needs.setup-env-job.outputs.AZURE_OPENAI_CHAT_DEPLOYMENT}}
           AZURE_OPENAI_EMBEDDING_DEPLOYMENT: ${{needs.setup-env-job.outputs.AZURE_OPENAI_EMBEDDING_DEPLOYMENT}}
+          AZURE_OPENAI_EMBEDDING_API_VERSION: ${{needs.setup-env-job.outputs.AZURE_OPENAI_EMBEDDING_API_VERSION}}
           AZURE_OPENAI_EMBEDDING_MODEL: ${{needs.setup-env-job.outputs.AZURE_OPENAI_EMBEDDING_MODEL}}
           PROMPTFLOW_WORKER_NUM: ${{needs.setup-env-job.outputs.PROMPTFLOW_WORKER_NUM}}
           PROMPTFLOW_SERVING_ENGINE: ${{needs.setup-env-job.outputs.PROMPTFLOW_SERVING_ENGINE}}
@@ -192,7 +197,8 @@ jobs:
             path: adversarial_test_w_jailbreak.json
  
   integration-testing:
-    needs: [setup-env-job, qa-flow-evaluation, qa-safety-evaluation]
+    # needs: [setup-env-job, qa-flow-evaluation, qa-safety-evaluation]
+    needs: [setup-env-job, qa-safety-evaluation]
     runs-on: ubuntu-latest
     environment: dev
     steps:

@@ -138,7 +138,7 @@ module search '../search/search-services.bicep' =
   if (!empty(searchName)) {
     name: location
     params: {
-      location: 'eastus'
+      location: 'eastus2'
       tags: tags
       name: searchName
       semanticSearch: 'free'
