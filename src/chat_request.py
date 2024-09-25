@@ -15,7 +15,7 @@ def get_context(question, embedding):
 def get_embedding(question: str):
     connection = AzureOpenAIConnection(        
                     azure_deployment=os.getenv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT", ""),
-                    api_version=os.getenv("AZURE_OPENAI_EMBEDDING_API_VERSION", "2023-05-15"),
+                    api_version="2023-05-15",
                     api_key=os.getenv("AZURE_OPENAI_API_KEY", ""),
                     api_base=os.getenv("AZURE_OPENAI_ENDPOINT", "")
                     )
