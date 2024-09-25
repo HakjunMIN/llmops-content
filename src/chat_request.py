@@ -22,16 +22,26 @@ def get_embedding(question: str):
                 
     client = init_azure_openai_client(connection)
 
-    return client.embeddings.create(
-            input=question,
-            model=os.getenv("AZURE_OPENAI_EMBEDDING_MODEL", ""),
-        ).data[0].embedding
+    embedding_response = client.embeddings.create(
+        input=question,
+        model=os.getenv("AZURE_OPENAI_EMBEDDING_MODEL", ""),
+    )
+    embedding = embedding_response.data[0].embedding
+    print("embedding:", embedding)
+    return embedding
 
 @tool
 def get_response(question, chat_history):
     print("inputs:", question)
     embedding = get_embedding(question)
+    
+    if embedding is None:
+        raise ValueError("Embedding is None")
+    
     context = get_context(question, embedding)
+    if context is None:
+        raise ValueError("Context is None")
+    
     print("context:", context)
     print("getting result...")
 
