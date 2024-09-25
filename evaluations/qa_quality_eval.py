@@ -29,7 +29,7 @@ def main():
     ##################################
 
     pf = PFClient()
-    flow = "./src/chat.prompty" 
+    flow = "./src/" 
     data = "./evaluations/test-dataset.jsonl"  # path to the data file
 
     # base run
