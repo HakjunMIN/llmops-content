@@ -63,7 +63,7 @@ def main():
     model_config = AzureOpenAIModelConfiguration(
         azure_endpoint=os.environ.get("AZURE_OPENAI_ENDPOINT"),
         api_key=os.environ.get("AZURE_OPENAI_API_KEY"),
-        azure_deployment=os.environ.get("AZURE_OPENAI_DEPLOYMENT"),
+        azure_deployment=os.environ.get("AZURE_OPENAI_CHAT_DEPLOYMENT"),
         api_version=os.environ.get("AZURE_OPENAI_API_VERSION"),
     )
     
@@ -71,6 +71,7 @@ def main():
         "subscription_id": os.getenv("AZURE_SUBSCRIPTION_ID"),
         "resource_group_name": os.getenv("AZURE_RESOURCE_GROUP"),
         "project_name": os.getenv("AZUREAI_PROJECT_NAME"),
+        "credential": DefaultAzureCredential(),
     }    
 
     # https://learn.microsoft.com/en-us/azure/ai-studio/how-to/develop/flow-evaluate-sdk
