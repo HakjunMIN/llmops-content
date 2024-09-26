@@ -1,0 +1,38 @@
+{
+    "name": "Azure Search OpenAI Demo",
+    "image": "mcr.microsoft.com/devcontainers/python:3.11",
+    "features": {
+        "ghcr.io/devcontainers/features/node:1": {
+            // This should match the version of Node.js in Github Actions workflows
+            "version": "18",
+            "nodeGypDependencies": false
+        },
+        "ghcr.io/devcontainers/features/azure-cli:1.0.8": {},
+        "ghcr.io/azure/azure-dev/azd:latest": {},
+        "ghcr.io/devcontainers/features/docker-in-docker:1": {},
+        "kubectl-helm-minikube": {
+            "version": "latest",
+            "helm": "latest",
+            "minikube": "latest"
+        }
+
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-azuretools.azure-dev",
+                "ms-azuretools.vscode-bicep",
+                "ms-python.python",
+                "esbenp.prettier-vscode"
+            ]
+        }
+    },
+    "forwardPorts": [
+        50505
+    ],
+    "postCreateCommand": "",
+    "remoteUser": "vscode",
+    "hostRequirements": {
+        "memory": "8gb"
+    }
+}
