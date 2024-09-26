@@ -26,8 +26,8 @@ def get_embedding(question: str):
         input=question,
         model=os.getenv("AZURE_OPENAI_EMBEDDING_MODEL", ""),
     )
-    embedding = embedding_response.data[0].embedding
-   
+    embedding: List[float] = embedding_response.data[0].embedding if embedding_response.data[0].embedding is not None else []
+
     return embedding
 
 @tool
@@ -56,7 +56,7 @@ def get_response(question, chat_history):
     result = prompty_obj(question = question, documents = context)
 
     print("result: ", result)
-
+    
     return {"answer": result, "context": context}
 
 if __name__ == "__main__":
