@@ -60,6 +60,9 @@ coverage.xml
 .pytest_cache/
 cover/
 
+*/.promptflow/
+*/.promptflow-tools
+
 # Translations
 *.mo
 *.pot
