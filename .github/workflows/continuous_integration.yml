@@ -182,16 +182,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Create flow docker files
-        run: |
-              # reference: https://github.com/microsoft/promptflow/tree/main/examples/tutorials/flow-deploy/azure-app-service
-              pf flow build --source src --output dist --format docker       
+      # - name: Create flow docker files
+      #   run: |
+      #         # reference: https://github.com/microsoft/promptflow/tree/main/examples/tutorials/flow-deploy/azure-app-service
+      #         pf flow build --source src --output dist --format docker       
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-            name: build-artifacts
-            path: dist/
+      # - name: Upload build artifacts
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #       name: build-artifacts
+      #       path: dist/
 
       - name: Login to Azure CLI
         uses: azure/login@v2
@@ -202,11 +202,8 @@ jobs:
         env:
           AZURE_CONTAINER_REPOSITORY_NAME: ${{needs.setup-env-job.outputs.AZURE_CONTAINER_REPOSITORY_NAME}}          
         run: |
-            echo "✅ Building docker image..."
-            path=dist
-            image_tag=$AZURE_CONTAINER_REPOSITORY_NAME:develop-${{ github.sha }}
-            echo "Change working directory to $path"
-            cd "$path"
+            echo "✅ Building docker image..."            
+            image_tag=$AZURE_CONTAINER_REPOSITORY_NAME:develop-${{ github.sha }}            
             docker build -t "$image_tag" .
 
       - name: Run Container
