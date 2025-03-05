@@ -39,7 +39,7 @@ runs:
         fi      
 
     - name: Install Azure Developer CLI 
-      uses: Azure/setup-azd@v1.0.0
+      uses: Azure/setup-azd@v2.0.0
 
     - name: Login to Azure CLI
       uses: azure/login@v2
